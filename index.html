@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Arafat Hasan — Front-end &amp; Shopify Developer</title>
+  <!-- Google Fonts: Montserrat for bold reference typography, Plus Jakarta Sans for UI, and Caveat/Kalam for handwritten notes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Kalam:wght@700&family=Montserrat:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=8.3">
+</head>
+
+<body>
+  <!-- Reference-Matched Luxury Card Preloader -->
+  <div id="preloader" class="preloader">
+    <div id="preloaderCard" class="preloader-card">
+      <div class="card-ambient-glow"></div>
+
+      <!-- Top Row: Big Number Counter & Brand -->
+      <div class="preloader-top">
+        <div class="preloader-counter" id="preloaderCounter">00</div>
+        <div class="preloader-brand">
+          <span>Arafat Hasan</span>
+          <span class="brand-badge">Dev</span>
+        </div>
+      </div>
+
+      <!-- Center Floating 3D Preview Card -->
+      <div class="preloader-center">
+        <div class="preloader-mini-card">
+          <div class="mini-card-header">
+            <span class="mini-dot red"></span>
+            <span class="mini-dot"></span>
+            <span class="mini-dot"></span>
+          </div>
+          <div class="mini-card-body">
+            <div class="mini-avatar">
+              <div class="mini-avatar-eyes">
+                <span class="mini-avatar-eye"><span class="mini-avatar-pupil" id="miniPupilLeft"></span></span>
+                <span class="mini-avatar-eye"><span class="mini-avatar-pupil" id="miniPupilRight"></span></span>
+              </div>
+            </div>
+            <div class="mini-lines">
+              <span class="line-pill"></span>
+              <span class="line-pill short"></span>
+            </div>
+          </div>
+          <div class="mini-card-glow"></div>
+        </div>
+      </div>
+
+      <!-- Bottom Row: Tagline & Status Indicator -->
+      <div class="preloader-bottom">
+        <div class="preloader-meta">
+          <span class="meta-subtitle">Front–end &amp; Shopify</span>
+          <span class="meta-title">Under Control</span>
+        </div>
+        <div class="preloader-status" id="preloaderStatus">
+          <span class="status-pulse"></span>
+          <span id="preloaderStatusLabel">Loading</span>
+          <svg class="status-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="7" y1="17" x2="17" y2="7"></line>
+            <polyline points="7 7 17 7 17 17"></polyline>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Luxury Site Header with Mouse-Following Red Eyes Logo & AraFaT Name -->
+  <header class="site-header" id="siteHeader">
+    <div class="header-container">
+      <!-- Mouse-Following Red Eyes Brand Logo -->
+      <a href="#" class="brand-logo" id="brandLogo" aria-label="AraFaT - Return to Top">
+        <div class="logo-emblem-wrap">
+          <svg class="logo-eyes-svg" id="logoEyesSvg" viewBox="0 0 58 38" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="redEyeGlow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="1.6" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+              <radialGradient id="irisGrad" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#ff7b8d" />
+                <stop offset="35%" stop-color="#ff1a35" />
+                <stop offset="80%" stop-color="#b30018" />
+                <stop offset="100%" stop-color="#4d000a" />
+              </radialGradient>
+              <linearGradient id="emblemBorder" x1="0" y1="0" x2="58" y2="38" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#ff2a44" stop-opacity="0.85" />
+                <stop offset="50%" stop-color="rgba(255, 255, 255, 0.18)" />
+                <stop offset="100%" stop-color="#dc0e28" stop-opacity="0.7" />
+              </linearGradient>
+              <!-- Left Eye Clip -->
+              <clipPath id="leftEyeClip">
+                <path d="M 10 18 C 13 13.5, 23 13.5, 26.5 19 C 23 24.5, 13 24.5, 10 18 Z" />
+              </clipPath>
+              <!-- Right Eye Clip -->
+              <clipPath id="rightEyeClip">
+                <path d="M 48 18 C 45 13.5, 35 13.5, 31.5 19 C 35 24.5, 45 24.5, 48 18 Z" />
+              </clipPath>
+            </defs>
+
+            <!-- Outer Badge Plate -->
+            <rect x="1" y="1" width="56" height="36" rx="11" fill="#0b0e16" stroke="url(#emblemBorder)"
+              stroke-width="1.2" class="emblem-base" />
+            <rect x="2.5" y="2.5" width="53" height="33" rx="9.5" fill="rgba(255, 42, 68, 0.05)" />
+
+            <!-- Corner High-Tech Brackets -->
+            <path d="M 1 11 V 7 C 1 3.7 3.7 1 7 1 H 12" stroke="#ff2a44" stroke-width="1.6" stroke-linecap="round" />
+            <path d="M 57 11 V 7 C 57 3.7 54.3 1 51 1 H 46" stroke="#ff2a44" stroke-width="1.6"
+              stroke-linecap="round" />
+            <path d="M 1 27 V 31 C 1 34.3 3.7 37 7 37 H 12" stroke="#ff2a44" stroke-width="1.6"
+              stroke-linecap="round" />
+            <path d="M 57 27 V 31 C 57 34.3 54.3 37 51 37 H 46" stroke="#ff2a44" stroke-width="1.6"
+              stroke-linecap="round" />
+
+            <!-- Center Bridge Tech Accent -->
+            <line x1="27.5" y1="19" x2="30.5" y2="19" stroke="rgba(255, 42, 68, 0.45)" stroke-width="1.4"
+              stroke-linecap="round" />
+
+            <!-- Left Eye Socket Border -->
+            <path d="M 10 18 C 13 13.5, 23 13.5, 26.5 19 C 23 24.5, 13 24.5, 10 18 Z" fill="#06070b"
+              stroke="rgba(255, 42, 68, 0.45)" stroke-width="0.8" />
+
+            <!-- Left Eye Track Group (Scales for organic blinks) -->
+            <g class="eye-track-group left-eye" id="leftEyeGroup">
+              <g clip-path="url(#leftEyeClip)">
+                <!-- Ambient sclera glow -->
+                <ellipse cx="18.25" cy="19" rx="6.5" ry="3.5" fill="rgba(255, 30, 56, 0.16)" />
+                <!-- Dynamic Left Pupil (Smoothly follows mouse) -->
+                <g id="leftPupilGroup" class="pupil-group">
+                  <circle cx="18.25" cy="19" r="4.3" fill="url(#irisGrad)" filter="url(#redEyeGlow)" />
+                  <ellipse cx="18.25" cy="19" rx="1.5" ry="2.7" fill="#150205" />
+                  <circle cx="17.0" cy="17.5" r="1.1" fill="#ffffff" opacity="0.95" />
+                  <circle cx="19.3" cy="20.3" r="0.55" fill="#ffffff" opacity="0.5" />
+                </g>
+              </g>
+            </g>
+
+            <!-- Right Eye Socket Border -->
+            <path d="M 48 18 C 45 13.5, 35 13.5, 31.5 19 C 35 24.5, 45 24.5, 48 18 Z" fill="#06070b"
+              stroke="rgba(255, 42, 68, 0.45)" stroke-width="0.8" />
+
+            <!-- Right Eye Track Group (Scales for organic blinks) -->
+            <g class="eye-track-group right-eye" id="rightEyeGroup">
+              <g clip-path="url(#rightEyeClip)">
+                <!-- Ambient sclera glow -->
+                <ellipse cx="39.75" cy="19" rx="6.5" ry="3.5" fill="rgba(255, 30, 56, 0.16)" />
+                <!-- Dynamic Right Pupil (Smoothly follows mouse) -->
+                <g id="rightPupilGroup" class="pupil-group">
+                  <circle cx="39.75" cy="19" r="4.3" fill="url(#irisGrad)" filter="url(#redEyeGlow)" />
+                  <ellipse cx="39.75" cy="19" rx="1.5" ry="2.7" fill="#150205" />
+                  <circle cx="38.5" cy="17.5" r="1.1" fill="#ffffff" opacity="0.95" />
+                  <circle cx="40.8" cy="20.3" r="0.55" fill="#ffffff" opacity="0.5" />
+                </g>
+              </g>
+            </g>
+          </svg>
+          <div class="emblem-ambient-glow"></div>
+        </div>
+
+        <!-- AraFaT Brand Typography -->
+        <div class="brand-text">
+          <div class="brand-name">AraFaT<span class="brand-dot"></span></div>
+          <div class="brand-badge-pill">Shopify &bull; Front-end</div>
+        </div>
+      </a>
+
+      <!-- Minimalist Floating Menu Button (Top-Right) -->
+      <button class="floating-menu-btn" id="menuToggleBtn" aria-label="Toggle Navigation Menu" aria-expanded="false">
+        <span class="menu-btn-ambient-glow"></span>
+        <div class="hamburger-box">
+          <span class="hamburger-line line-top"></span>
+          <span class="hamburger-line line-mid"></span>
+          <span class="hamburger-line line-bot"></span>
+        </div>
+      </button>
+    </div>
+  </header>
+
+  <!-- Luxury Fullscreen Navigation Overlay -->
+  <div class="nav-overlay" id="navOverlay" aria-hidden="true">
+    <div class="nav-overlay-backdrop" id="navBackdrop"></div>
+    <div class="nav-overlay-content">
+      <div class="nav-ambient-glow"></div>
+
+      <!-- Menus Positioned in the Middle of the Screen -->
+      <nav class="nav-panel-menu">
+        <a href="#projects" class="nav-panel-link">
+          <span class="nav-link-text">Selected Work</span>
+        </a>
+        <a href="#about" class="nav-panel-link">
+          <span class="nav-link-text">About Me</span>
+        </a>
+        <a href="#cv" class="nav-panel-link">
+          <span class="nav-link-text">Resume / CV</span>
+        </a>
+        <a href="#contact" class="nav-panel-link">
+          <span class="nav-link-text">Get in Touch</span>
+        </a>
+      </nav>
+
+      <!-- Nav Panel Bottom Footer -->
+      <div class="nav-panel-footer">
+        <div class="nav-footer-status">
+          <span class="status-pulse-green"></span>
+          <span>Available for projects</span>
+        </div>
+        <a href="mailto:arafathasanprince501@gmail.com" class="nav-contact-email">arafathasanprince501@gmail.com</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero Section with Sticky Viewport Track -->
+  <section class="hero-section" id="heroSection">
+    <div class="hero-sticky-track">
+      <!-- Fullscreen Canvas for Scroll-Driven Video Scrubbing -->
+      <canvas id="frameCanvas"></canvas>
+
+      <!-- Left Content Overlay with Butter-Smooth Text Scramble -->
+      <div class="hero-left-wrapper">
+        <div class="hero-container">
+          <div class="hero-left">
+            <!-- Dynamic Text Content Container (Scrambles smoothly on scroll) -->
+            <div class="hero-text-content" id="heroTextContent">
+              <h1 class="hero-title">
+                <span class="scramble-line line-1" id="scrambleLine1">I build Front–end &amp;</span>
+                <span class="gradient-text scramble-line line-2" id="scrambleLine2">Shopify stores</span>
+                <span class="scramble-line line-3" id="scrambleLine3">that convert.</span>
+              </h1>
+              <p class="hero-description" id="scrambleDesc">
+                Hi, I'm Arafat Hasan, a developer in Dhaka building fast, modern, and high-converting web experiences
+                with the
+                MERN stack &amp; Shopify 2.0.
+              </p>
+            </div>
+
+            <!-- Static Actions (Stays strictly anchored in position across all scroll states) -->
+            <div class="hero-actions">
+              <a href="#work" class="btn btn-primary" id="btnWork">
+                <span>See my work</span>
+                <svg class="btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </a>
+              <a href="#cv" class="btn btn-secondary" id="btnCV">
+                <span>Download CV</span>
+                <svg class="btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scroll-Driven Liquid Blood Typography Section (Exact Visual Reference Match) -->
+  <section class="blood-fill-section" id="bloodFillSection" aria-label="Coding is more than just a job">
+    <div class="blood-fill-sticky-wrap">
+      <div class="blood-fill-container">
+        <!-- High-Precision SVG Typography Vessel with Multi-Layer Fluid Blood Simulation -->
+        <svg class="blood-typography-svg" id="bloodSvg" viewBox="0 0 1600 760" preserveAspectRatio="xMidYMid meet"
+          style="font-family: 'Montserrat', 'Arial Black', sans-serif; font-weight: 900;">
+          <defs>
+            <style>
+              .blood-glyph-text {
+                font-family: 'Montserrat', 'Arial Black', sans-serif !important;
+                font-weight: 900 !important;
+                text-anchor: middle;
+                dominant-baseline: alphabetic;
+              }
+            </style>
+            <!-- Blood Letter Clipping Mask (Letters strictly constrain the fluid) -->
+            <clipPath id="bloodLettersClip">
+              <text id="clipTextLine1" x="800" y="230" text-anchor="middle" class="blood-glyph-text line-1"
+                font-family="'Montserrat', 'Arial Black', sans-serif" font-weight="900">CODINGIS</text>
+              <text id="clipTextLine2" x="800" y="435" text-anchor="middle" class="blood-glyph-text line-2"
+                font-family="'Montserrat', 'Arial Black', sans-serif" font-weight="900">MORE THAN</text>
+              <text id="clipTextLine3" x="800" y="640" text-anchor="middle" class="blood-glyph-text line-3"
+                font-family="'Montserrat', 'Arial Black', sans-serif" font-weight="900">JUST A JOB</text>
+            </clipPath>
+
+            <!-- Deep Clotted Venous Blood Gradient (Top to Bottom) -->
+            <linearGradient id="deepBloodGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#240205" />
+              <stop offset="45%" stop-color="#46040a" />
+              <stop offset="85%" stop-color="#6e0611" />
+              <stop offset="100%" stop-color="#8a0916" />
+            </linearGradient>
+
+            <!-- Rich Ruby Viscous Blood Gradient (Top to Bottom) -->
+            <linearGradient id="midBloodGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#3b0308" />
+              <stop offset="40%" stop-color="#690610" />
+              <stop offset="75%" stop-color="#a30e1e" />
+              <stop offset="100%" stop-color="#c41427" />
+            </linearGradient>
+
+            <!-- Arterial Vibrant Blood Gradient (Top to Bottom) -->
+            <linearGradient id="frontBloodGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#4f040b" />
+              <stop offset="35%" stop-color="#8a0a17" />
+              <stop offset="70%" stop-color="#c91427" />
+              <stop offset="95%" stop-color="#ed1f37" />
+              <stop offset="100%" stop-color="#ff334b" />
+            </linearGradient>
+
+            <!-- Meniscus Specular Highlight Gradient -->
+            <linearGradient id="meniscusGlowGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="rgba(255, 140, 160, 0.25)" />
+              <stop offset="25%" stop-color="rgba(255, 190, 205, 0.85)" />
+              <stop offset="50%" stop-color="rgba(255, 240, 245, 0.98)" />
+              <stop offset="75%" stop-color="rgba(255, 190, 205, 0.85)" />
+              <stop offset="100%" stop-color="rgba(255, 140, 160, 0.25)" />
+            </linearGradient>
+
+            <!-- Letter-by-Letter Progressive Fill Mask -->
+            <mask id="letterFillMask">
+              <rect x="-100" y="-100" width="1800" height="960" fill="black" />
+              <path id="maskLettersPath" fill="white" />
+            </mask>
+          </defs>
+
+          <!-- Layer 1: Empty Glass Typography Vessel (Initial Clean Light State) -->
+          <g class="vessel-base-group">
+            <text x="800" y="230" text-anchor="middle" class="blood-glyph-text vessel-bg-text line-1"
+              font-family="'Montserrat', 'Arial Black', sans-serif" font-weight="900">CODINGIS</text>
+            <text x="800" y="435" text-anchor="middle" class="blood-glyph-text vessel-bg-text line-2"
+              font-family="'Montserrat', 'Arial Black', sans-serif" font-weight="900">MORE THAN</text>
+            <text x="800" y="640" text-anchor="middle" class="blood-glyph-text vessel-bg-text line-3"
+              font-family="'Montserrat', 'Arial Black', sans-serif" font-weight="900">JUST A JOB</text>
+          </g>
+
+          <!-- Layer 2: Clipped Multi-Layer Viscous Blood Fluid (Letter-by-Letter Progressive Reveal) -->
+          <g clip-path="url(#bloodLettersClip)" mask="url(#letterFillMask)">
+            <!-- Deep Venous Wave (Back layer) -->
+            <path id="bloodWaveBack" class="blood-wave wave-back" fill="url(#deepBloodGrad)" />
+
+            <!-- Mid Fluid Wave (Ruby viscous body) -->
+            <path id="bloodWaveMid" class="blood-wave wave-mid" fill="url(#midBloodGrad)" />
+
+            <!-- Front Arterial Wave (Dynamic surface) -->
+            <path id="bloodWaveFront" class="blood-wave wave-front" fill="url(#frontBloodGrad)" />
+          </g>
+
+          <!-- Layer 3: Specular Meniscus Highlight along Liquid Surface of Active Letter(s) -->
+          <g clip-path="url(#bloodLettersClip)">
+            <path id="bloodMeniscusHighlight" class="blood-meniscus-line" stroke="url(#meniscusGlowGrad)"
+              stroke-width="3.5" stroke-linecap="round" fill="none" />
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================= -->
+  <!-- ABOUT ME / DESK WORKSPACE COLLAGE SECTION -->
+  <!-- 100% Pure Code HTML/CSS Implementation   -->
+  <!-- ========================================= -->
+  <section id="about" class="about-section" aria-label="About Arafat Hasan - Developer & Workspace">
+    <div class="about-desk-surface">
+      <div class="about-container">
+
+        <!-- Top Row: Handwritten Philosophy Trio -->
+        <div class="about-top-bar">
+          <!-- Handwritten Philosophy Trio -->
+          <div class="philosophy-trio">
+            <!-- Left Dark Badge -->
+            <div class="philo-badge badge-dark">
+              <span class="badge-text">BUILD</span>
+              <span class="badge-text">CREATE</span>
+              <span class="badge-text">IMPROVE</span>
+              <svg class="doodle-crown" viewBox="0 0 24 16" width="22" height="15" fill="none" stroke="#ff2a44"
+                stroke-width="2">
+                <path d="M2 14L4 4L9 9L12 2L15 9L20 4L22 14H2Z" />
+              </svg>
+            </div>
+
+            <!-- Center Ripped Paper Note -->
+            <div class="philo-note-paper">
+              <p class="handwritten-quote">
+                Turning <span class="doodle-oval">Ideas</span> into <br>
+                Fast, Modern &amp; Scalable <br>
+                Web Experiences.
+              </p>
+              <span class="doodle-underline"></span>
+            </div>
+
+            <!-- Right Crimson Badge -->
+            <div class="philo-badge badge-crimson">
+              <span class="badge-text">CODE</span>
+              <span class="badge-text">DESIGN</span>
+              <span class="badge-text">DEVELOP</span>
+              <span class="badge-text">DEPLOY</span>
+              <svg class="doodle-crown" viewBox="0 0 24 16" width="20" height="14" fill="none" stroke="#ffffff"
+                stroke-width="2">
+                <path d="M2 14L4 4L9 9L12 2L15 9L20 4L22 14H2Z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Bento Grid (Left: Bio & Tools, Center: Skills, Right: Services & Setup) -->
+        <div class="about-desk-grid">
+
+          <!-- ================= COLUMN 1: IDENTITY & TOOLS ================= -->
+          <div class="desk-col col-identity">
+
+            <!-- 1. Profile Polaroid -->
+            <div class="polaroid-card" id="profilePolaroid">
+              <!-- Red Paperclip SVG pinned to top left -->
+              <div class="red-paperclip" aria-hidden="true">
+                <svg viewBox="0 0 30 64" width="26" height="54" fill="none">
+                  <path
+                    d="M15 4 C9 4 5 8 5 15 V48 C5 56 11 60 17 60 C23 60 27 56 27 48 V18 C27 12 23 8 18 8 C13 8 10 12 10 18 V46"
+                    stroke="#ff2a44" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </div>
+
+              <div class="polaroid-frame">
+                <img src="assets/My%20image.png" alt="Arafat Hasan - Developer" class="polaroid-photo" />
+              </div>
+              <div class="polaroid-bottom">
+                <span class="polaroid-title">Arafat Hasan</span>
+                <span class="polaroid-subtitle">Developer</span>
+                <svg class="doodle-crown-mini" viewBox="0 0 24 16" width="18" height="12" fill="none" stroke="#ff2a44"
+                  stroke-width="2">
+                  <path d="M2 14L4 4L9 9L12 2L15 9L20 4L22 14H2Z" />
+                </svg>
+              </div>
+            </div>
+
+            <!-- WorkSpace Tools Note (Positioned in Left Bottom) -->
+            <div class="card-workspace-paper">
+              <div class="note-top-pin">
+                <h4 class="paper-title">WorkSpace</h4>
+                <span class="title-underline"></span>
+              </div>
+              <div class="workspace-content">
+                <ul class="check-list">
+                  <li><span class="check-mark">&check;</span> Windows</li>
+                  <li><span class="check-mark">&check;</span> VS Code</li>
+                  <li><span class="check-mark">&check;</span> Figma</li>
+                  <li><span class="check-mark">&check;</span> Chrome Dev</li>
+                  <li><span class="check-mark">&check;</span> Motion</li>
+                </ul>
+                <div class="handwritten-aside">
+                  <span>Good Tools<br>Better Ideas</span>
+                  <span class="aside-smile">:)</span>
+                </div>
+              </div>
+              <!-- Stacked Book Spines -->
+              <div class="desk-spines-group">
+                <span class="spine-tag spine-shopify">SHOPIFY</span>
+                <span class="spine-tag spine-front">FRONT-END</span>
+                <span class="spine-tag spine-js">JavaScript</span>
+                <span class="spine-tag spine-react">React</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ================= COLUMN 2: SKILLS MATRIX ================= -->
+          <div class="desk-col col-skills">
+
+            <!-- Spiral Notepad: Skills -->
+            <div class="notepad-paper card-skills-pad">
+              <!-- Spiral Binding Cutouts -->
+              <div class="spiral-binding-bar" aria-hidden="true">
+                <span class="spiral-ring"></span><span class="spiral-ring"></span>
+                <span class="spiral-ring"></span><span class="spiral-ring"></span>
+                <span class="spiral-ring"></span><span class="spiral-ring"></span>
+                <span class="spiral-ring"></span><span class="spiral-ring"></span>
+                <span class="spiral-ring"></span><span class="spiral-ring"></span>
+              </div>
+
+              <div class="notepad-header">
+                <h3 class="paper-title">Skills</h3>
+                <span class="title-underline"></span>
+              </div>
+
+              <!-- Frontend Skills Group -->
+              <div class="skills-block">
+                <span class="block-category-label">Frontend</span>
+                <div class="skills-chips-grid">
+                  <!-- HTML5 -->
+                  <div class="skill-chip" title="HTML5 Semantic Structure">
+                    <div class="chip-svg-wrap">
+                      <svg viewBox="0 0 24 24" width="18" height="18">
+                        <path fill="#E44D26" d="M3 2h18l-1.6 18.3L12 23l-7.4-2.7L3 2z" />
+                        <path fill="#F16529" d="M12 3.8v17.3l5.8-2.1 1.3-15.2H12z" />
+                        <path fill="#EBEBEB"
+                          d="M7.6 7.4h4.4v2.7H8.7l.3 3.3h3v2.7H8.2l-.6-8.7zm.8 9.3l-.2-2h4.4v2.7l-4.2-.7z" />
+                        <path fill="#fff"
+                          d="M12 7.4h4.4l-.4 4.5h-4v-2.7h1.4l.2-1.8H12V7.4zm0 6h2.7l-.3 3.3-2.4.7v2.8l4.4-1.2.7-8.3H12v2.7z" />
+                      </svg>
+                    </div>
+                    <span class="chip-name">HTML5</span>
+                  </div>
+
+                  <!-- CSS3 -->
+                  <div class="skill-chip" title="CSS3 Responsive Layouts">
+                    <div class="chip-svg-wrap">
+                      <svg viewBox="0 0 24 24" width="18" height="18">
+                        <path fill="#1572B6" d="M3 2h18l-1.6 18.3L12 23l-7.4-2.7L3 2z" />
+                        <path fill="#33A9DC" d="M12 3.8v17.3l5.8-2.1 1.3-15.2H12z" />
+                        <path fill="#fff" d="M12 7.4h4.6l-.3 3.5H12v2.7h3.7l-.4 4.5-3.3.9v2.8l5.8-1.6 1-11.8H12V7.4z" />
+                        <path fill="#EBEBEB" d="M12 13.6H8.8l-.3-3.5H12V7.4H7.8l.8 9.7 3.4.9v-4.4z" />
+                      </svg>
+                    </div>
+                    <span class="chip-name">CSS3</span>
+                  </div>
+
+                  <!-- JavaScript -->
+                  <div class="skill-chip" title="JavaScript ES6+ & Async Architecture">
+                    <div class="chip-svg-wrap">
+                      <svg viewBox="0 0 24 24" width="18" height="18">
+                        <rect width="24" height="24" rx="3" fill="#F7DF1E" />
+                        <path
+                          d="M7 17.5c.8.6 1.8 1 2.8 1 1.6 0 2.5-.8 2.5-2v-6.7h-2.5v6.7c0 .5-.3.8-.8.8-.4 0-.8-.2-1.1-.4l-.9.6zm7.2.2c1.3.7 2.7 1.1 4.1 1.1 2.5 0 4-1.3 4-3.3 0-1.8-1.2-2.8-3-3.6l-.8-.4c-.9-.4-1.4-.8-1.4-1.4 0-.6.5-1.1 1.4-1.1.9 0 1.7.3 2.3.8l.9-1.5c-.8-.6-1.9-.9-3.2-.9-2.3 0-3.8 1.4-3.8 3.2 0 1.8 1.2 2.8 3.1 3.6l.8.4c.9.4 1.5.8 1.5 1.5 0 .7-.6 1.2-1.6 1.2-1.1 0-2.1-.4-2.9-1l-.5 1.5z" />
+                      </svg>
+                    </div>
+                    <span class="chip-name">JavaScript</span>
+                  </div>
+
+                  <!-- Tailwind CSS -->
+                  <div class="skill-chip" title="Tailwind CSS Utility Styling">
+                    <div class="chip-svg-wrap">
+                      <svg viewBox="0 0 24 24" width="18" height="18">
+                        <path fill="#06B6D4"
+                          d="M12.001 4.8c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624C13.666 10.618 15.027 12 18.001 12c3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C16.336 6.182 14.975 4.8 12.001 4.8zm-6 7.2c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624 1.177 1.194 2.538 2.576 5.512 2.576 3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C10.336 13.382 8.975 12 6.001 12z" />
+                      </svg>
+                    </div>
+                    <span class="chip-name">Tailwind CSS</span>
+                  </div>
+
+                  <!-- React -->
+                  <div class="skill-chip" title="React.js Component Architecture">
+                    <div class="chip-svg-wrap">
+                      <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
+                        <ellipse cx="12" cy="12" rx="10" ry="4" stroke="#61DAFB" stroke-width="1.5" />
+                        <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)" stroke="#61DAFB"
+                          stroke-width="1.5" />
+                        <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)" stroke="#61DAFB"
+                          stroke-width="1.5" />
+                        <circle cx="12" cy="12" r="1.8" fill="#61DAFB" />
+                      </svg>
+                    </div>
+                    <span class="chip-name">React</span>
+                  </div>
+
+                  <!-- Bootstrap -->
+                  <div class="skill-chip" title="Bootstrap Grid & Utilities">
+                    <div class="chip-svg-wrap">
+                      <svg viewBox="0 0 24 24" width="18" height="18">
+                        <rect width="24" height="24" rx="4" fill="#7952B3" />
+                        <path fill="#fff"
+                          d="M8.2 6.5h4.2c1.7 0 2.8.9 2.8 2.2 0 .9-.5 1.6-1.4 1.9 1.1.3 1.8 1.2 1.8 2.3 0 1.5-1.2 2.6-3.1 2.6H8.2V6.5zm2.4 3.5h1.6c.6 0 1-.3 1-.8 0-.6-.4-.8-1-.8h-1.6v1.6zm0 3.7h1.9c.7 0 1.1-.3 1.1-.9 0-.6-.4-.9-1.1-.9h-1.9v1.8z" />
+                      </svg>
+                    </div>
+                    <span class="chip-name">Bootstrap</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Backend & Others Skills Group -->
+              <div class="skills-block">
+                <span class="block-category-label">Backend &amp; Others</span>
+                <div class="skills-chips-grid">
+                  <!-- Node.js -->
+                  <div class="skill-chip" title="Node.js API Runtimes">
+                    <div class="chip-svg-wrap">
+                      <svg viewBox="0 0 24 24" width="18" height="18">
+                        <path fill="#339933"
+                          d="M12 2l9.5 5.5v11L12 24l-9.5-5.5v-11L12 2zm0 2.3L4.5 8.7v8.6L12 21.7l7.5-4.4V8.7L12 4.3z" />
+                      </svg>
+                    </div>
+                    <span class="chip-name">Node.js</span>
+                  </div>
+
+                  <!-- Express.js -->
+                  <div class="skill-chip" title="Express.js REST Framework">
+                    <div class="chip-svg-wrap">
+                      <svg viewBox="0 0 24 24" width="18" height="18">
+                        <rect width="24" height="24" rx="3" fill="#111" />
+                        <path fill="#fff"
+                          d="M5 7h4v2H7v3h2v2H7v3H5V7zm6 0h2.2l1.6 3.7L16.4 7H19l-2.7 5.2L19 17h-2.5l-1.7-3.8L13.1 17H11l2.7-4.8L11 7z" />
+                      </svg>
+                    </div>
+                    <span class="chip-name">Express.js</span>
+                  </div>
+
+                  <!-- MongoDB -->
+                  <div class="skill-chip" title="MongoDB NoSQL Schemas">
+                    <div class="chip-svg-wrap">
+                      <svg viewBox="0 0 24 24" width="18" height="18">
+                        <path fill="#47A248"
+                          d="M12 2c-.3 0-.5.2-.6.4C10.4 5.3 6 11.2 6 15.5c0 4 3 7.5 6 8.5 3-1 6-4.5 6-8.5 0-4.3-4.4-10.2-5.4-13.1-.1-.2-.3-.4-.6-.4zm0 2.2c.8 2.2 4.5 7.5 4.5 11.3 0 2.8-2 5.5-4.5 6.7V4.2z" />
+                      </svg>
+                    </div>
+                    <span class="chip-name">MongoDB</span>
+                  </div>
+
+                  <!-- Git -->
+                  <div class="skill-chip" title="Git Version Control & Branching">
+                    <div class="chip-svg-wrap">
+                      <svg viewBox="0 0 24 24" width="18" height="18">
+                        <path fill="#F05032"
+                          d="M22.6 10.9L13.1 1.4c-.6-.6-1.5-.6-2.1 0L9.4 3 12 5.6c.6-.2 1.3 0 1.8.4.5.5.7 1.2.5 1.8l2.5 2.5c.6-.2 1.3 0 1.8.5.7.7.7 1.9 0 2.6-.7.7-1.9.7-2.6 0-.5-.5-.7-1.3-.4-1.9l-2.4-2.4v5.3c.2.2.4.4.5.6.7.7.7 1.9 0 2.6-.7.7-1.9.7-2.6 0-.7-.7-.7-1.9 0-2.6.2-.2.4-.4.6-.5V8.5c-.2-.1-.4-.3-.6-.5-.5-.5-.7-1.2-.5-1.8L8.1 3.6 1.4 10.3c-.6.6-.6 1.5 0 2.1l9.5 9.5c.6.6 1.5.6 2.1 0l9.6-9.5c.6-.7.6-1.6 0-2.2z" />
+                      </svg>
+                    </div>
+                    <span class="chip-name">Git</span>
+                  </div>
+
+                  <!-- Shopify -->
+                  <div class="skill-chip" title="Shopify 2.0 Custom Themes & Apps">
+                    <div class="chip-svg-wrap">
+                      <svg viewBox="0 0 24 24" width="18" height="18">
+                        <path fill="#95BF47"
+                          d="M19.8 6.4c-.1-.3-.3-.5-.6-.5l-2.5-.3-1.6-1.6c-.3-.3-.8-.4-1.2-.2l-.6.2C13.1 3.5 12.6 3 12 3c-.1 0-.3 0-.4.1C11.3 2.5 10.7 2 10 2c-1.3 0-2.4 1-2.5 2.3l-3.3.4c-.4 0-.8.3-.9.7L2 19.3c0 .3.1.6.4.7.2.1.4.1.6.1l11.4 1.9h.4l7.6-1.8c.3-.1.6-.3.6-.7L19.8 6.4zm-9.3-3.2c.4 0 .7.3.8.7l-1.6.2c0-.5.4-.9.8-.9zm-1.8 1.2l2.3-.3c.1.4.3.7.6 1l-2.7.3c-.1-.4-.2-.7-.2-1z" />
+                      </svg>
+                    </div>
+                    <span class="chip-name">Shopify</span>
+                  </div>
+
+                  <!-- Liquid -->
+                  <div class="skill-chip" title="Shopify Liquid Logic & Schemas">
+                    <div class="chip-svg-wrap">
+                      <svg viewBox="0 0 24 24" width="18" height="18">
+                        <rect width="24" height="24" rx="3" fill="#004C6D" />
+                        <path fill="#fff" d="M6 8h3v8H6V8zm4 0h3v8h-3V8zm4 0h4v2h-2v4h2v2h-4V8z" />
+                      </svg>
+                    </div>
+                    <span class="chip-name">Liquid</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Notepad Bottom Note -->
+              <div class="notepad-footer">
+                <p class="footer-handwritten">
+                  Clean Code<br>
+                  Better Performance<br>
+                  Great User Experience
+                </p>
+                <svg class="doodle-crown-footer" viewBox="0 0 24 16" width="22" height="14" fill="none" stroke="#ff2a44"
+                  stroke-width="2">
+                  <path d="M2 14L4 4L9 9L12 2L15 9L20 4L22 14H2Z" />
+                </svg>
+              </div>
+            </div>
+
+            <!-- Tech Stickers Card Placed Below Notepad -->
+            <div class="tech-stickers-badge-plate">
+              <span class="tech-pill pill-shopify">Shopify</span>
+              <span class="tech-pill pill-react">React</span>
+              <span class="tech-pill pill-node">Node</span>
+              <span class="tech-pill pill-js">JS</span>
+              <span class="tech-pill pill-html">HTML5</span>
+              <span class="tech-pill pill-css">CSS3</span>
+            </div>
+
+          </div>
+
+          <!-- ================= COLUMN 3: SERVICES & SETUP ================= -->
+          <div class="desk-col col-services">
+
+            <!-- Services Notepad Card with Silver Paperclip -->
+            <div class="notepad-paper card-services-pad">
+              <!-- Silver Paperclip pinned to top right -->
+              <div class="silver-paperclip" aria-hidden="true">
+                <svg viewBox="0 0 30 64" width="26" height="54" fill="none">
+                  <path
+                    d="M15 4 C9 4 5 8 5 15 V48 C5 56 11 60 17 60 C23 60 27 56 27 48 V18 C27 12 23 8 18 8 C13 8 10 12 10 18 V46"
+                    stroke="#b8c0cc" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </div>
+
+              <div class="notepad-header">
+                <h3 class="paper-title">Services</h3>
+                <span class="title-underline"></span>
+              </div>
+
+              <ul class="services-checklist">
+                <li><span class="check-bullet">&check;</span> Shopify Store Development</li>
+                <li><span class="check-bullet">&check;</span> Custom Liquid Sections</li>
+                <li><span class="check-bullet">&check;</span> Theme Customization</li>
+                <li><span class="check-bullet">&check;</span> Front-End Web Development</li>
+                <li><span class="check-bullet">&check;</span> Responsive Design</li>
+                <li><span class="check-bullet">&check;</span> Performance Optimization</li>
+                <li><span class="check-bullet">&check;</span> Bug Fixing &amp; Support</li>
+              </ul>
+
+              <!-- Hand-Drawn Circled CTA Button -->
+              <div class="cta-circled-wrap">
+                <a href="mailto:arafathasanprince501@gmail.com?subject=Project%20Inquiry%20-%20Let's%20Build%20Something%20Great"
+                  class="circled-build-cta" title="Click to send project inquiry email">
+                  <svg class="cta-doodle-oval" viewBox="0 0 240 68" preserveAspectRatio="none">
+                    <ellipse cx="120" cy="34" rx="114" ry="28" fill="none" stroke="#ff2a44" stroke-width="2.5" />
+                  </svg>
+                  <span class="cta-caption">Let's Build Something Great</span>
+                  <svg class="cta-arrow-doodle" viewBox="0 0 26 20" width="22" height="16" fill="none" stroke="#ff2a44"
+                    stroke-width="2">
+                    <path d="M2 18 C8 16 16 12 24 4 M16 3 L25 3 L25 12" />
+                  </svg>
+                  <svg class="cta-crown-doodle" viewBox="0 0 24 16" width="18" height="12" fill="none" stroke="#ff2a44"
+                    stroke-width="2">
+                    <path d="M2 14L4 4L9 9L12 2L15 9L20 4L22 14H2Z" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            <!-- Workspace Setup Showcase Card with Craft Tape -->
+            <div class="card-setup-showcase" id="setupShowcaseCard">
+              <div class="craft-tape tape-left" aria-hidden="true"></div>
+              <div class="craft-tape tape-right" aria-hidden="true"></div>
+
+              <div class="setup-frame">
+                <img src="assets/workspace%20image.png" alt="Arafat Hasan Workspace Setup" class="setup-photo" />
+                <!-- Little Sticker on Workspace Image -->
+                <div class="workspace-photo-sticker" id="workspaceSticker">
+                  <span class="sticker-dot-red"></span>
+                  <span class="sticker-text">My workspace</span>
+                </div>
+                <div class="setup-badge-tag tag-top">
+                  <span>DREAM &bull; PLAN &bull; <strong class="text-red">CODE</strong> &bull; SHIP</span>
+                </div>
+                <div class="setup-badge-tag tag-bottom">
+                  <strong>Shopify</strong>
+                  <span>Build &bull; Customize &bull; Grow</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Motivation Sticky Tag -->
+            <div class="card-motivation-tape">
+              <span class="motivation-phrase">Small Steps, Big Goals</span>
+              <svg class="doodle-crown-mini" viewBox="0 0 24 16" width="18" height="12" fill="none" stroke="#ff2a44"
+                stroke-width="2">
+                <path d="M2 14L4 4L9 9L12 2L15 9L20 4L22 14H2Z" />
+              </svg>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Floating Copy Toast Notification -->
+        <div id="copyToast" class="copy-toast" role="status" aria-live="polite">
+          <svg class="toast-check-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#ff2a44"
+            stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <span id="copyToastText">Copied to clipboard!</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================= -->
+  <!-- COLLECTION/014PRO: 3D WebGL CURVED IMAGE RIBBON (Three.js & GSAP) -->
+  <!-- ================================================================= -->
+  <section class="projects-section" id="projects" aria-label="Featured Works">
+    <!-- Seamless blend transition from dark desk into soft light-grey studio -->
+    <div class="projects-top-transition" aria-hidden="true"></div>
+
+    <!-- Pinned Viewport Stage Container -->
+    <div class="projects-pinned-stage" id="projectsPinnedStage">
+      <!-- Background Kinetic Headline Layer (Parallax Split) -->
+      <div class="ribbon-headline-wrap" aria-hidden="true">
+        <div class="ribbon-headline headline-left" id="ribbonHeadlineLeft">DESIGN IN</div>
+        <div class="ribbon-headline headline-right" id="ribbonHeadlineRight">MOTION</div>
+      </div>
+
+      <!-- Center Fixed Caption -->
+      <div class="ribbon-center-caption">
+        <span class="caption-main">EXPLORING IDEAS THROUGH DAILY DESIGN PRACTICE.</span>
+        <span class="caption-sub">Arafat Hasan • Selected Works</span>
+      </div>
+
+      <!-- Three.js WebGL Canvas -->
+      <canvas id="projectsWebGLCanvas" class="projects-webgl-canvas"></canvas>
+
+      <!-- Active Project Info HUD Card -->
+      <div class="project-info-hud" id="projectInfoHud">
+        <div class="hud-category-badge" id="hudCategoryBadge">SHOPIFY 2.0</div>
+        <h3 class="hud-project-title" id="hudProjectTitle">Lumina Atelier</h3>
+        <p class="hud-project-desc" id="hudProjectDesc">Luxury fashion flagship engineered with custom Liquid, dynamic filtering &amp; +184% conversion rate.</p>
+        <a href="#contact" class="hud-explore-btn" id="hudExploreBtn">
+          <span>Explore Project</span>
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+        </a>
+      </div>
+
+      <!-- Bottom HUD Controls & Indicators -->
+      <div class="projects-bottom-controls">
+        <!-- Prev Button -->
+        <button class="project-arrow-btn prev-btn" id="projectPrevBtn" aria-label="Previous Project">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+
+        <!-- Pagination Dots -->
+        <div class="project-pagination-dots" id="projectPaginationDots">
+          <button class="project-dot active" data-index="0" aria-label="Go to project 1"></button>
+          <button class="project-dot" data-index="1" aria-label="Go to project 2"></button>
+          <button class="project-dot" data-index="2" aria-label="Go to project 3"></button>
+          <button class="project-dot" data-index="3" aria-label="Go to project 4"></button>
+          <button class="project-dot" data-index="4" aria-label="Go to project 5"></button>
+          <button class="project-dot" data-index="5" aria-label="Go to project 6"></button>
+          <button class="project-dot" data-index="6" aria-label="Go to project 7"></button>
+          <button class="project-dot" data-index="7" aria-label="Go to project 8"></button>
+          <button class="project-dot" data-index="8" aria-label="Go to project 9"></button>
+        </div>
+
+        <!-- Next Button -->
+        <button class="project-arrow-btn next-btn" id="projectNextBtn" aria-label="Next Project">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+
+        <!-- Drag or Scroll Hint -->
+        <div class="project-drag-hint">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8L22 12L18 16M6 8L2 12L6 16M2 12H22"/></svg>
+          <span>Scroll to scrub • Drag ribbon</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Target Cursor (ReactBits-style Interactive Snapping Reticle) -->
+  <div class="target-cursor" id="targetCursor" aria-hidden="true">
+    <div class="target-cursor-inner" id="targetCursorInner">
+      <div class="target-cursor-corner target-corner-tl"></div>
+      <div class="target-cursor-corner target-corner-tr"></div>
+      <div class="target-cursor-corner target-corner-br"></div>
+      <div class="target-cursor-corner target-corner-bl"></div>
+      <div class="target-cursor-center-dot"></div>
+    </div>
+  </div>
+
+  <!-- COLLECTION/014PRO Dependencies: Three.js, GSAP, ScrollTrigger, Lenis -->
+  <script src="assets/vendor/three.min.js"></script>
+  <script src="assets/vendor/gsap.min.js"></script>
+  <script src="assets/vendor/ScrollTrigger.min.js"></script>
+  <script src="assets/vendor/lenis.min.js"></script>
+  <script src="app.js?v=9.1"></script>
+</body>
+
+</html>
