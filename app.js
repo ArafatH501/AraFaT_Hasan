@@ -1,7 +1,5 @@
 (() => {
-  const TOTAL_FRAMES = 192;
-  const canvas = document.getElementById('frameCanvas');
-  const ctx = canvas.getContext('2d', { alpha: false });
+  const elHeroPortrait = document.getElementById('heroPortraitImg');
 
   // Preloader Elements
   const elPreloader = document.getElementById('preloader');
@@ -156,14 +154,9 @@
     }
   }
 
-  // Video Frame Scrubbing Engine
-  const images = new Array(TOTAL_FRAMES);
-  const loaded = new Array(TOTAL_FRAMES).fill(false);
-  let loadedCount = 0;
-
+  // Cinematic Hero Visual Engine
   let targetProgress = 0;
   let currentProgress = 0;
-  let lastDrawnImg = null;
   const LERP_FACTOR = 0.22;
 
   // Projects Showcase Progression
@@ -171,74 +164,12 @@
   let currentProjectsProgress = 0;
   let projectsEngine = null;
 
-  const getFramePath = (index) => {
-    return `frames/frame_${String(index).padStart(6, '0')}.png`;
-  };
-
-  // High-DPI canvas sizing
-  function resizeCanvas() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    canvas.width = Math.round(window.innerWidth * dpr);
-    canvas.height = Math.round(window.innerHeight * dpr);
-
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
-
-    lastDrawnImg = null;
-    renderCurrent();
-  }
-
-  // Find the closest loaded frame to eliminate flicker
-  function getBestFrame(target) {
-    if (loaded[target] && images[target] && images[target].complete && images[target].naturalWidth > 0) {
-      return images[target];
-    }
-    for (let offset = 1; offset < TOTAL_FRAMES; offset++) {
-      const left = target - offset;
-      if (left >= 0 && loaded[left] && images[left] && images[left].complete && images[left].naturalWidth > 0) {
-        return images[left];
-      }
-      const right = target + offset;
-      if (right < TOTAL_FRAMES && loaded[right] && images[right] && images[right].complete && images[right].naturalWidth > 0) {
-        return images[right];
-      }
-    }
-    return null;
-  }
-
-  // Draw frame with object-fit: cover logic
-  function drawToCanvas(img) {
-    const cWidth = canvas.width;
-    const cHeight = canvas.height;
-    const iWidth = img.naturalWidth;
-    const iHeight = img.naturalHeight;
-
-    const hRatio = cWidth / iWidth;
-    const vRatio = cHeight / iHeight;
-    const ratio = Math.max(hRatio, vRatio);
-
-    const drawW = iWidth * ratio;
-    const drawH = iHeight * ratio;
-    const drawX = (cWidth - drawW) / 2;
-    const drawY = (cHeight - drawH) / 2;
-
-    ctx.drawImage(img, 0, 0, iWidth, iHeight, drawX, drawY, drawW, drawH);
-  }
-
-  // Render current frame corresponding to currentProgress
+  // Subtle Parallax / Zoom on Hero Portrait as stages advance
   function renderCurrent() {
-    const targetIndex = Math.min(
-      TOTAL_FRAMES - 1,
-      Math.max(0, Math.round(currentProgress * (TOTAL_FRAMES - 1)))
-    );
-
-    const img = getBestFrame(targetIndex);
-    if (!img || !img.complete || img.naturalWidth === 0) return;
-
-    if (img !== lastDrawnImg) {
-      drawToCanvas(img);
-      lastDrawnImg = img;
-    }
+    if (!elHeroPortrait) return;
+    const scale = 1.02 + currentProgress * 0.05;
+    const translateY = currentProgress * -18;
+    elHeroPortrait.style.transform = `scale(${scale.toFixed(4)}) translateY(${translateY.toFixed(1)}px)`;
   }
 
   // Header Element
@@ -272,30 +203,20 @@
 
     if (!elHeroSection || !elBloodSection) return;
 
-    const heroHeight = elHeroSection.offsetHeight;
-    const heroMaxScroll = Math.max(heroHeight - winHeight, 1);
-
     const bloodTop = elBloodSection.offsetTop;
     const bloodHeight = elBloodSection.offsetHeight;
     const bloodMaxScroll = Math.max(bloodHeight - winHeight, 1);
 
-    // 1. HERO ANIMATION PROGRESSION (Pinned until 100% completed)
-    if (scrollTop <= heroMaxScroll) {
-      targetProgress = Math.min(1, Math.max(0, scrollTop / heroMaxScroll));
+    // Hero section has no scroll trigger / scroll lock
+    targetProgress = Math.min(1, Math.max(0, scrollTop / Math.max(winHeight, 1)));
+
+    // BLOOD FILL SECTION PROGRESSION
+    if (scrollTop < bloodTop) {
       targetBloodProgress = 0;
     } else {
-      // Hero has finished 100% and is released to scroll away
-      targetProgress = 1.0;
-
-      // 2. BLOOD FILL SECTION PROGRESSION
-      if (scrollTop < bloodTop) {
-        // Direct seamless handoff: Hero is scrolling out, Blood section is scrolling in (zero gap)
-        targetBloodProgress = 0;
-      } else {
-        // Blood section is docked & pinned at top: 0: fill from top to bottom based on scroll
-        const bloodScroll = Math.min(bloodMaxScroll, scrollTop - bloodTop);
-        targetBloodProgress = Math.min(1, Math.max(0, bloodScroll / bloodMaxScroll));
-      }
+      // Blood section is docked & pinned at top: fill from 0 to 1 based on scroll
+      const bloodScroll = Math.min(bloodMaxScroll, scrollTop - bloodTop);
+      targetBloodProgress = Math.min(1, Math.max(0, bloodScroll / bloodMaxScroll));
     }
 
     // Dynamic Site Header Theme Switch (Light theme when over #f3f5f0 background)
@@ -307,7 +228,7 @@
       }
 
       // Brand logo only shown in hero section; hide when scrolled past hero
-      if (scrollTop > heroMaxScroll) {
+      if (scrollTop > winHeight * 0.4) {
         elSiteHeader.classList.add('logo-hidden');
       } else {
         elSiteHeader.classList.remove('logo-hidden');
@@ -332,7 +253,7 @@
     }
   }
 
-  // Animation Loop (LERP scrubbing + synchronous text updates + fluid simulation)
+  // Animation Loop (LERP scrubbing + fluid simulation)
   function tick(now) {
     const diff = targetProgress - currentProgress;
     if (Math.abs(diff) > 0.0001) {
@@ -345,7 +266,6 @@
     scrollVelocity *= 0.88;
 
     renderCurrent();
-    updateTextStage(currentProgress);
 
     // Render continuous fluid blood waves
     if (bloodEngine) {
@@ -366,28 +286,36 @@
   let preloaderFinished = false;
   let displayedCount = 0;
   const startTime = performance.now();
-  const MIN_PRELOAD_DURATION = 1600; // ms to ensure user enjoys the counting aesthetic
+  const MIN_PRELOAD_DURATION = 1400; // ms to ensure user enjoys the counting aesthetic
+
+  // Preload Hero Portrait
+  let heroImageLoaded = false;
+  const heroImg = new Image();
+  heroImg.onload = () => { heroImageLoaded = true; };
+  heroImg.onerror = () => { heroImageLoaded = true; };
+  heroImg.src = 'assets/hero-portrait.png';
+  if (heroImg.complete && heroImg.naturalWidth > 0) {
+    heroImageLoaded = true;
+  }
 
   function tickPreloader(now) {
     if (preloaderFinished) return;
 
     const elapsed = now - startTime;
     const timeProgress = Math.min(100, Math.floor((elapsed / MIN_PRELOAD_DURATION) * 100));
-    const networkProgress = Math.floor((loadedCount / TOTAL_FRAMES) * 100);
+    const targetCount = heroImageLoaded ? Math.min(100, timeProgress) : Math.min(85, timeProgress);
 
     // Smoothly step counter towards progress
-    const targetCount = Math.min(100, Math.max(timeProgress, networkProgress));
-
     if (displayedCount < targetCount) {
-      displayedCount += Math.max(1, Math.ceil((targetCount - displayedCount) * 0.15));
+      displayedCount += Math.max(1, Math.ceil((targetCount - displayedCount) * 0.18));
       if (displayedCount > 100) displayedCount = 100;
       if (elCounter) {
         elCounter.textContent = String(displayedCount).padStart(2, '0');
       }
     }
 
-    // Ready trigger: 100 reached + frame 0 is ready
-    if (displayedCount >= 100 && loaded[0]) {
+    // Ready trigger: 100 reached + hero portrait ready
+    if (displayedCount >= 100 && (heroImageLoaded || elapsed > 1800)) {
       completePreloader();
     } else {
       requestAnimationFrame(tickPreloader);
@@ -419,39 +347,6 @@
         if (elPreloader) elPreloader.style.display = 'none';
       }, 900);
     }, 200);
-  }
-
-  // Preload all 192 frames in background
-  function preloadFrames() {
-    // Frame 0 priority
-    const firstImg = new Image();
-    firstImg.onload = () => {
-      loaded[0] = true;
-      loadedCount++;
-      renderCurrent();
-      loadRemainingFrames();
-    };
-    firstImg.onerror = () => {
-      loadRemainingFrames();
-    };
-    firstImg.src = getFramePath(0);
-    images[0] = firstImg;
-  }
-
-  function loadRemainingFrames() {
-    for (let i = 1; i < TOTAL_FRAMES; i++) {
-      const img = new Image();
-      img.onload = () => {
-        loaded[i] = true;
-        loadedCount++;
-        renderCurrent();
-      };
-      img.onerror = () => {
-        loadedCount++;
-      };
-      img.src = getFramePath(i);
-      images[i] = img;
-    }
   }
 
   // =========================================
@@ -757,33 +652,39 @@
 
     if (!bloodSvg || !waveBack || !waveMid || !waveFront || !maskLettersPath) return null;
 
-    // 24 individual characters in exact sequential reading order (Line 1 -> Line 2 -> Line 3)
-    // Pixel-perfect baseline character bounding boxes
+    // 33 individual characters in exact sequential reading order across 3 lines:
+    // Line 1: "CODE WITH PURPOSE." (16 letters, 2 spaces)
+    // Line 2: "DESIGN WITH" (10 letters, 1 space)
+    // Line 3: "INTENT." (7 letters)
+    const line1Chars = ['C', 'O', 'D', 'E', 'W', 'I', 'T', 'H', 'P', 'U', 'R', 'P', 'O', 'S', 'E', '.'];
+    const line2Chars = ['D', 'E', 'S', 'I', 'G', 'N', 'W', 'I', 'T', 'H'];
+    const line3Chars = ['I', 'N', 'T', 'E', 'N', 'T', '.'];
+
     const LETTERS = [
-      { char: 'C', line: 1, x: 269, y: 25, width: 143, height: 258 },
-      { char: 'O', line: 1, x: 412, y: 25, width: 172, height: 258 },
-      { char: 'D', line: 1, x: 583, y: 25, width: 167, height: 258 },
-      { char: 'I', line: 1, x: 750, y: 25, width: 66, height: 258 },
-      { char: 'N', line: 1, x: 817, y: 25, width: 162, height: 258 },
-      { char: 'G', line: 1, x: 979, y: 25, width: 155, height: 258 },
-      { char: 'I', line: 1, x: 1134, y: 25, width: 66, height: 258 },
-      { char: 'S', line: 1, x: 1200, y: 25, width: 131, height: 258 },
-      { char: 'M', line: 2, x: 123, y: 230, width: 198, height: 258 },
-      { char: 'O', line: 2, x: 320, y: 230, width: 175, height: 258 },
-      { char: 'R', line: 2, x: 495, y: 230, width: 153, height: 258 },
-      { char: 'E', line: 2, x: 649, y: 230, width: 138, height: 258 },
-      { char: 'T', line: 2, x: 846, y: 230, width: 134, height: 258 },
-      { char: 'H', line: 2, x: 980, y: 230, width: 166, height: 258 },
-      { char: 'A', line: 2, x: 1145, y: 230, width: 166, height: 258 },
-      { char: 'N', line: 2, x: 1312, y: 230, width: 166, height: 258 },
-      { char: 'J', line: 3, x: 168, y: 435, width: 115, height: 258 },
-      { char: 'U', line: 3, x: 284, y: 435, width: 160, height: 258 },
-      { char: 'S', line: 3, x: 443, y: 435, width: 131, height: 258 },
-      { char: 'T', line: 3, x: 574, y: 435, width: 132, height: 258 },
-      { char: 'A', line: 3, x: 764, y: 435, width: 165, height: 258 },
-      { char: 'J', line: 3, x: 985, y: 435, width: 115, height: 258 },
-      { char: 'O', line: 3, x: 1101, y: 435, width: 173, height: 258 },
-      { char: 'B', line: 3, x: 1274, y: 435, width: 158, height: 258 }
+      ...line1Chars.map((char, i) => ({
+        char,
+        line: 1,
+        x: Math.round(230 + i * 76),
+        y: 155,
+        width: 72,
+        height: 110
+      })),
+      ...line2Chars.map((char, i) => ({
+        char,
+        line: 2,
+        x: Math.round(480 + i * 84),
+        y: 385,
+        width: 76,
+        height: 115
+      })),
+      ...line3Chars.map((char, i) => ({
+        char,
+        line: 3,
+        x: Math.round(610 + i * 86),
+        y: 615,
+        width: 80,
+        height: 120
+      }))
     ];
 
     // Dynamic browser font bounds refinement
@@ -809,7 +710,7 @@
               idx++;
             }
           }
-        } catch (e) {}
+        } catch (e) { }
       });
     }
 
@@ -823,7 +724,7 @@
     let tiltVelocity = 0;
     let sloshAmp = 0;
 
-    const N = LETTERS.length; // 24 letters
+    const N = LETTERS.length; // 33 letters
     const OVERLAP = 0.38; // Smooth liquid stream overlap between adjacent letters
     const totalSpan = (N - 1) + (1 + OVERLAP);
 
@@ -844,6 +745,8 @@
       const t1 = timeSeconds * 2.0;
       const t2 = timeSeconds * 2.8;
 
+
+
       // When empty at 0, render empty mask
       if (currentFill < 0.0005) {
         maskLettersPath.setAttribute('d', '');
@@ -854,9 +757,9 @@
       // 1. Render multi-layer fluid background paths spanning the viewBox
       const wb = Math.sin(t1) * 2.5;
       const wm = Math.cos(t2) * 2.0;
-      waveBack.setAttribute('d', 'M -50 -50 L 1650 -50 L 1650 760 L -50 760 Z');
-      waveMid.setAttribute('d', `M -50 ${-50 + wb} L 1650 ${-50 - wb} L 1650 ${760 + wb} L -50 ${760 - wb} Z`);
-      waveFront.setAttribute('d', `M -50 ${-50 + wm} L 1650 ${-50 - wm} L 1650 ${760 + wm} L -50 ${760 - wm} Z`);
+      waveBack.setAttribute('d', 'M -100 -50 L 1950 -50 L 1950 990 L -100 990 Z');
+      waveMid.setAttribute('d', `M -100 ${-50 + wb} L 1950 ${-50 - wb} L 1950 ${990 + wb} L -100 ${990 - wb} Z`);
+      waveFront.setAttribute('d', `M -100 ${-50 + wm} L 1950 ${-50 - wm} L 1950 ${990 + wm} L -100 ${990 - wm} Z`);
 
       // 2. Letter-by-letter continuous progressive reveal
       const currentPos = currentFill * totalSpan;
@@ -879,14 +782,14 @@
         const w = rx - lx;
 
         // Exact optical cap-height to baseline bounds per line
-        let lyTop = 68;
-        let lyBot = 233;
+        let lyTop = 145;
+        let lyBot = 275;
         if (letter.line === 2) {
-          lyTop = 273;
-          lyBot = 438;
+          lyTop = 380;
+          lyBot = 510;
         } else if (letter.line === 3) {
-          lyTop = 478;
-          lyBot = 643;
+          lyTop = 615;
+          lyBot = 745;
         }
 
         if (p_k >= 0.999) {
@@ -941,7 +844,7 @@
       }
     }
 
-    return { renderBlood };
+    return { renderBlood, refreshLetterCoordinates };
   }
 
   // =========================================
@@ -1832,9 +1735,9 @@
       render,
       setIndex,
       setCarouselIndex: setIndex,
-      playEntrance: () => {},
-      triggerEntrance: () => {},
-      resetEntrance: () => {}
+      playEntrance: () => { },
+      triggerEntrance: () => { },
+      resetEntrance: () => { }
     };
   }
 
@@ -1842,14 +1745,14 @@
   window.addEventListener('scroll', updateScroll, { passive: true });
   document.addEventListener('scroll', updateScroll, { passive: true });
   window.addEventListener('resize', () => {
-    resizeCanvas();
     updateScroll();
+    if (bloodEngine && bloodEngine.refreshLetterCoordinates) {
+      bloodEngine.refreshLetterCoordinates();
+    }
   }, { passive: true });
 
   // Initialize
-  resizeCanvas();
   updateScroll();
-  preloadFrames();
   initMouseFollowingEyes();
   initFloatingMenu();
   bloodEngine = initBloodLiquidEngine();

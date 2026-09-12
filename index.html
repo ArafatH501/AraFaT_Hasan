@@ -14,7 +14,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Kalam:wght@700&family=Montserrat:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=8.3">
+  <link rel="stylesheet" href="style.css?v=9.6">
 </head>
 
 <body>
@@ -226,8 +226,13 @@
   <!-- Hero Section with Sticky Viewport Track -->
   <section class="hero-section" id="heroSection">
     <div class="hero-sticky-track">
-      <!-- Fullscreen Canvas for Scroll-Driven Video Scrubbing -->
-      <canvas id="frameCanvas"></canvas>
+      <!-- Atmospheric Hero Portrait Visual -->
+      <div class="hero-visual-wrapper" id="heroVisual">
+        <img src="assets/hero-portrait.png" alt="Arafat Hasan — Front-end &amp; Shopify Developer"
+          class="hero-portrait-img" id="heroPortraitImg" />
+        <div class="hero-ambient-glow"></div>
+        <div class="hero-vignette-overlay"></div>
+      </div>
 
       <!-- Left Content Overlay with Butter-Smooth Text Scramble -->
       <div class="hero-left-wrapper">
@@ -278,7 +283,7 @@
     <div class="blood-fill-sticky-wrap">
       <div class="blood-fill-container">
         <!-- High-Precision SVG Typography Vessel with Multi-Layer Fluid Blood Simulation -->
-        <svg class="blood-typography-svg" id="bloodSvg" viewBox="0 0 1600 760" preserveAspectRatio="xMidYMid meet"
+        <svg class="blood-typography-svg" id="bloodSvg" viewBox="0 0 1800 920" preserveAspectRatio="xMidYMid meet"
           style="font-family: 'Montserrat', 'Arial Black', sans-serif; font-weight: 900;">
           <defs>
             <style>
@@ -291,12 +296,12 @@
             </style>
             <!-- Blood Letter Clipping Mask (Letters strictly constrain the fluid) -->
             <clipPath id="bloodLettersClip">
-              <text id="clipTextLine1" x="800" y="230" text-anchor="middle" class="blood-glyph-text line-1"
-                font-family="'Montserrat', 'Arial Black', sans-serif" font-weight="900">CODINGIS</text>
-              <text id="clipTextLine2" x="800" y="435" text-anchor="middle" class="blood-glyph-text line-2"
-                font-family="'Montserrat', 'Arial Black', sans-serif" font-weight="900">MORE THAN</text>
-              <text id="clipTextLine3" x="800" y="640" text-anchor="middle" class="blood-glyph-text line-3"
-                font-family="'Montserrat', 'Arial Black', sans-serif" font-weight="900">JUST A JOB</text>
+              <text id="clipTextLine1" x="900" y="255" text-anchor="middle" class="blood-glyph-text line-1"
+                font-family="'Montserrat', 'Arial Black', sans-serif" font-weight="900">CODE WITH PURPOSE.</text>
+              <text id="clipTextLine2" x="900" y="490" text-anchor="middle" class="blood-glyph-text line-2"
+                font-family="'Montserrat', 'Arial Black', sans-serif" font-weight="900">DESIGN WITH</text>
+              <text id="clipTextLine3" x="900" y="725" text-anchor="middle" class="blood-glyph-text line-3"
+                font-family="'Montserrat', 'Arial Black', sans-serif" font-weight="900">INTENT.</text>
             </clipPath>
 
             <!-- Deep Clotted Venous Blood Gradient (Top to Bottom) -->
@@ -333,21 +338,56 @@
               <stop offset="100%" stop-color="rgba(255, 140, 160, 0.25)" />
             </linearGradient>
 
+            <!-- True Neumorphic Debossed Inner Shadow Filter (Exact Match to User Reference) -->
+            <filter id="neumorphicInnerShadow" x="-20%" y="-20%" width="140%" height="140%">
+              <!-- 1. Top-Left Dark Inner Shadow -->
+              <feOffset dx="4.5" dy="4.5" in="SourceAlpha" result="offsetDownRight" />
+              <feComposite operator="out" in="SourceAlpha" in2="offsetDownRight" result="topEdge" />
+              <feGaussianBlur in="topEdge" stdDeviation="3.6" result="blurTopEdge" />
+              <feFlood flood-color="#808e9b" flood-opacity="0.75" result="shadowColor" />
+              <feComposite operator="in" in="shadowColor" in2="blurTopEdge" result="innerShadowColored" />
+              <feComposite operator="in" in="innerShadowColored" in2="SourceAlpha" result="clippedInnerShadow" />
+
+              <!-- 2. Bottom-Right Bright White Inner Highlight -->
+              <feOffset dx="-4" dy="-4" in="SourceAlpha" result="offsetUpLeft" />
+              <feComposite operator="out" in="SourceAlpha" in2="offsetUpLeft" result="bottomEdge" />
+              <feGaussianBlur in="bottomEdge" stdDeviation="3.0" result="blurBottomEdge" />
+              <feFlood flood-color="#ffffff" flood-opacity="0.95" result="highlightColor" />
+              <feComposite operator="in" in="highlightColor" in2="blurBottomEdge" result="innerHighlightColored" />
+              <feComposite operator="in" in="innerHighlightColored" in2="SourceAlpha" result="clippedInnerHighlight" />
+
+              <!-- 3. Base Cavity Fill Matching Background #f3f5f0 -->
+              <feFlood flood-color="#eaeee6" result="baseCavityColor" />
+              <feComposite operator="in" in="baseCavityColor" in2="SourceAlpha" result="clippedBaseCavity" />
+
+              <!-- 4. Subtle Outer Catch Light along Bottom-Right Lip -->
+              <feOffset dx="1.5" dy="1.5" in="SourceAlpha" result="outerOffsetH" />
+              <feGaussianBlur in="outerOffsetH" stdDeviation="1.5" result="outerBlurH" />
+              <feFlood flood-color="#ffffff" flood-opacity="0.65" result="outerColorH" />
+              <feComposite operator="in" in="outerColorH" in2="outerBlurH" result="outerHighlightColored" />
+              <feComposite operator="out" in="outerHighlightColored" in2="SourceAlpha" result="outerRim" />
+
+              <!-- Composite all layers in depth order -->
+              <feMerge>
+                <feMergeNode in="outerRim" />
+                <feMergeNode in="clippedBaseCavity" />
+                <feMergeNode in="clippedInnerHighlight" />
+                <feMergeNode in="clippedInnerShadow" />
+              </feMerge>
+            </filter>
+
             <!-- Letter-by-Letter Progressive Fill Mask -->
             <mask id="letterFillMask">
-              <rect x="-100" y="-100" width="1800" height="960" fill="black" />
+              <rect x="-100" y="-100" width="2000" height="1150" fill="black" />
               <path id="maskLettersPath" fill="white" />
             </mask>
           </defs>
 
-          <!-- Layer 1: Empty Glass Typography Vessel (Initial Clean Light State) -->
-          <g class="vessel-base-group">
-            <text x="800" y="230" text-anchor="middle" class="blood-glyph-text vessel-bg-text line-1"
-              font-family="'Montserrat', 'Arial Black', sans-serif" font-weight="900">CODINGIS</text>
-            <text x="800" y="435" text-anchor="middle" class="blood-glyph-text vessel-bg-text line-2"
-              font-family="'Montserrat', 'Arial Black', sans-serif" font-weight="900">MORE THAN</text>
-            <text x="800" y="640" text-anchor="middle" class="blood-glyph-text vessel-bg-text line-3"
-              font-family="'Montserrat', 'Arial Black', sans-serif" font-weight="900">JUST A JOB</text>
+          <!-- Layer 1: Tactile Neumorphic Typography Vessel with True Inner Shadow (Clean 3D State) -->
+          <g class="vessel-base-group" id="vesselBaseGroup" filter="url(#neumorphicInnerShadow)">
+            <text x="900" y="255" text-anchor="middle" class="blood-glyph-text vessel-bg-text line-1">CODE WITH PURPOSE.</text>
+            <text x="900" y="490" text-anchor="middle" class="blood-glyph-text vessel-bg-text line-2">DESIGN WITH</text>
+            <text x="900" y="725" text-anchor="middle" class="blood-glyph-text vessel-bg-text line-3">INTENT.</text>
           </g>
 
           <!-- Layer 2: Clipped Multi-Layer Viscous Blood Fluid (Letter-by-Letter Progressive Reveal) -->
@@ -806,10 +846,14 @@
       <div class="project-info-hud" id="projectInfoHud">
         <div class="hud-category-badge" id="hudCategoryBadge">SHOPIFY 2.0</div>
         <h3 class="hud-project-title" id="hudProjectTitle">Lumina Atelier</h3>
-        <p class="hud-project-desc" id="hudProjectDesc">Luxury fashion flagship engineered with custom Liquid, dynamic filtering &amp; +184% conversion rate.</p>
+        <p class="hud-project-desc" id="hudProjectDesc">Luxury fashion flagship engineered with custom Liquid, dynamic
+          filtering &amp; +184% conversion rate.</p>
         <a href="#contact" class="hud-explore-btn" id="hudExploreBtn">
           <span>Explore Project</span>
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="7" y1="17" x2="17" y2="7"></line>
+            <polyline points="7 7 17 7 17 17"></polyline>
+          </svg>
         </a>
       </div>
 
@@ -817,7 +861,9 @@
       <div class="projects-bottom-controls">
         <!-- Prev Button -->
         <button class="project-arrow-btn prev-btn" id="projectPrevBtn" aria-label="Previous Project">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
         </button>
 
         <!-- Pagination Dots -->
@@ -835,12 +881,16 @@
 
         <!-- Next Button -->
         <button class="project-arrow-btn next-btn" id="projectNextBtn" aria-label="Next Project">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
         </button>
 
         <!-- Drag or Scroll Hint -->
         <div class="project-drag-hint">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8L22 12L18 16M6 8L2 12L6 16M2 12H22"/></svg>
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 8L22 12L18 16M6 8L2 12L6 16M2 12H22" />
+          </svg>
           <span>Scroll to scrub • Drag ribbon</span>
         </div>
       </div>
@@ -864,7 +914,7 @@
   <script src="assets/vendor/gsap.min.js"></script>
   <script src="assets/vendor/ScrollTrigger.min.js"></script>
   <script src="assets/vendor/lenis.min.js"></script>
-  <script src="app.js?v=9.1"></script>
+  <script src="app.js?v=10.1"></script>
 </body>
 
 </html>
