@@ -14,7 +14,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Kalam:wght@700&family=Montserrat:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=9.6">
+  <link rel="stylesheet" href="style.css?v=12.0">
 </head>
 
 <body>
@@ -848,7 +848,7 @@
         <h3 class="hud-project-title" id="hudProjectTitle">Lumina Atelier</h3>
         <p class="hud-project-desc" id="hudProjectDesc">Luxury fashion flagship engineered with custom Liquid, dynamic
           filtering &amp; +184% conversion rate.</p>
-        <a href="#contact" class="hud-explore-btn" id="hudExploreBtn">
+        <a href="javascript:void(0)" class="hud-explore-btn" id="hudExploreBtn">
           <span>Explore Project</span>
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
             <line x1="7" y1="17" x2="17" y2="7"></line>
@@ -877,6 +877,7 @@
           <button class="project-dot" data-index="6" aria-label="Go to project 7"></button>
           <button class="project-dot" data-index="7" aria-label="Go to project 8"></button>
           <button class="project-dot" data-index="8" aria-label="Go to project 9"></button>
+          <button class="project-dot" data-index="9" aria-label="Go to project 10"></button>
         </div>
 
         <!-- Next Button -->
@@ -898,6 +899,222 @@
     </div>
   </section>
 
+  <!-- ================================================================= -->
+  <!-- LUXURY PROJECT PREVIEW MODAL (Desktop / Mobile Device Frames)     -->
+  <!-- ================================================================= -->
+  <div class="project-modal" id="projectModal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="modalProjectTitle">
+    <!-- Backdrop Overlay with Deep Studio Blur -->
+    <div class="project-modal-backdrop" id="projectModalBackdrop"></div>
+
+    <!-- Modal Content Shell -->
+    <div class="project-modal-dialog">
+      <!-- Modal Top Navigation Bar -->
+      <div class="project-modal-header">
+        <!-- Project Branding Info (Left) -->
+        <div class="modal-header-meta">
+          <span class="modal-category-badge" id="modalCategoryBadge">SHOPIFY 2.0</span>
+          <div class="modal-title-row">
+            <h3 class="modal-project-title" id="modalProjectTitle">Aurelium</h3>
+            <a href="#" target="_blank" rel="noopener noreferrer" class="modal-live-link-pill" id="modalLiveLinkPill" title="Open live website in new tab">
+              <span class="pulse-indicator"></span>
+              <span class="link-label">Visit Live Store</span>
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- View Switcher Controls (Center) -->
+        <div class="modal-view-switcher" role="tablist" aria-label="Device View Switcher">
+          <button class="view-switch-btn active" id="viewBtnDesktop" data-view="desktop" role="tab" aria-selected="true" title="Switch to Desktop Browser View">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+              <line x1="8" y1="21" x2="16" y2="21"></line>
+              <line x1="12" y1="17" x2="12" y2="21"></line>
+            </svg>
+            <span>Desktop View</span>
+          </button>
+          <button class="view-switch-btn" id="viewBtnMobile" data-view="mobile" role="tab" aria-selected="false" title="Switch to Mobile Device View">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="5" y="2" width="14" height="20" rx="3" ry="3"></rect>
+              <line x1="12" y1="18" x2="12.01" y2="18"></line>
+            </svg>
+            <span>Mobile View</span>
+          </button>
+          <div class="view-switcher-slider" id="viewSwitcherSlider"></div>
+        </div>
+
+        <!-- Header Actions & Close Button (Right) -->
+        <div class="modal-header-actions">
+          <button class="modal-close-btn" id="modalCloseBtn" aria-label="Close Project Preview">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+            <span class="esc-badge">ESC</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Preview Stage Container (Houses both Desktop & Mobile Frames) -->
+      <div class="modal-preview-stage" id="modalPreviewStage" data-active-view="desktop">
+
+        <!-- ================= DESKTOP VIEW FRAME ================= -->
+        <div class="desktop-frame-wrap" id="desktopFrameWrap">
+          <div class="desktop-browser-chrome">
+            <!-- macOS Traffic Lights -->
+            <div class="browser-traffic-lights">
+              <span class="traffic-dot red" id="trafficCloseDot" title="Close Preview"></span>
+              <span class="traffic-dot yellow"></span>
+              <span class="traffic-dot green"></span>
+            </div>
+
+            <!-- Simulated Browser Navigation Arrows -->
+            <div class="browser-nav-arrows">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </div>
+
+            <!-- Browser URL Bar -->
+            <div class="browser-url-bar">
+              <svg class="url-lock-icon" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              <span class="browser-url-text" id="browserUrlText">https://aurelium-9857.myshopify.com/</span>
+              <span class="browser-secure-badge">SSL Secure</span>
+            </div>
+
+            <!-- Browser Right Info & Live Link -->
+            <div class="browser-right-meta">
+              <span class="browser-resolution-tag">1920 × FULL</span>
+              <a href="#" target="_blank" rel="noopener noreferrer" class="browser-open-link" id="browserOpenLink" title="Open live site in new tab">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- Desktop Scrollable Viewport -->
+          <div class="desktop-scroll-viewport" id="desktopScrollViewport" tabindex="0">
+            <div class="desktop-content-canvas" id="desktopContentCanvas">
+              <img id="desktopPreviewImg" class="preview-scrollable-image" src="" alt="Desktop Project Preview" loading="lazy">
+              <video id="desktopPreviewVideo" class="preview-scrollable-video" src="" controls autoplay muted loop playsinline style="display:none;"></video>
+            </div>
+          </div>
+
+          <!-- Scroll Hint Floating Badge -->
+          <div class="viewport-scroll-hint" id="desktopScrollHint">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 5v14M19 12l-7 7-7-7"/>
+            </svg>
+            <span>Scroll to inspect full page</span>
+          </div>
+
+          <!-- Quick Back to Top button -->
+          <button class="viewport-scroll-top-btn" id="desktopScrollTopBtn" aria-label="Scroll back to top">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
+          </button>
+        </div>
+
+        <!-- ================= MOBILE VIEW FRAME ================= -->
+        <div class="mobile-frame-wrap" id="mobileFrameWrap" style="display: none;">
+          <div class="mobile-phone-chassis">
+            <!-- Dynamic Island Notch -->
+            <div class="mobile-dynamic-island">
+              <span class="island-camera"></span>
+              <span class="island-sensor"></span>
+            </div>
+
+            <!-- Phone Speaker Earpiece -->
+            <div class="mobile-speaker-slot"></div>
+
+            <!-- Simulated Mobile Status Bar -->
+            <div class="mobile-status-bar">
+              <span class="status-time">9:41</span>
+              <div class="status-icons">
+                <!-- Signal -->
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor">
+                  <path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 18.25c-.2.2-.2.51 0 .71.2.2.51.2.71 0l.64-.64C7.23 19.38 9.5 20.25 12 20.25s4.77-.87 6.3-1.93l.64.64c.2.2.51.2.71 0 .2-.2.2-.51 0-.71l-.62-.64C20.26 16.07 21 14.12 21 12c0-4.97-4.03-9-9-9z" opacity="0.4"/>
+                  <path d="M12 6a6 6 0 0 0-6 6c0 1.45.52 2.78 1.38 3.82l1.42-1.42A3.988 3.988 0 0 1 8 12a4 4 0 0 1 8 0c0 .92-.31 1.76-.84 2.44l1.42 1.42C17.48 14.78 18 13.45 18 12a6 6 0 0 0-6-6z"/>
+                </svg>
+                <!-- Battery -->
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="2" y="7" width="16" height="10" rx="2" ry="2"></rect>
+                  <line x1="20" y1="11" x2="20" y2="13"></line>
+                  <rect x="4" y="9" width="10" height="6" fill="currentColor" stroke="none"></rect>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Mobile Scrollable Viewport -->
+            <div class="mobile-scroll-viewport" id="mobileScrollViewport" tabindex="0">
+              <div class="mobile-content-canvas" id="mobileContentCanvas">
+                <img id="mobilePreviewImg" class="preview-scrollable-image" src="" alt="Mobile Project Preview" loading="lazy">
+                <video id="mobilePreviewVideo" class="preview-scrollable-video" src="" controls autoplay muted loop playsinline style="display:none;"></video>
+              </div>
+            </div>
+
+            <!-- Home Indicator Bar -->
+            <div class="mobile-home-indicator"></div>
+          </div>
+
+          <!-- Mobile Scroll Hint -->
+          <div class="viewport-scroll-hint mobile-hint" id="mobileScrollHint">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 5v14M19 12l-7 7-7-7"/>
+            </svg>
+            <span>Scroll to inspect</span>
+          </div>
+
+          <!-- Quick Back to Top button for mobile -->
+          <button class="viewport-scroll-top-btn" id="mobileScrollTopBtn" aria-label="Scroll back to top">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Modal Bottom Bar (Quick Project Switcher Prev / Next) -->
+      <div class="project-modal-footer">
+        <button class="modal-nav-btn prev" id="modalPrevProjectBtn" title="Previous Project">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          <span>Previous Project</span>
+        </button>
+
+        <div class="modal-project-counter" id="modalProjectCounter">
+          <span id="modalCurrentIndex">01</span>
+          <span class="counter-slash">/</span>
+          <span id="modalTotalProjects">10</span>
+        </div>
+
+        <button class="modal-nav-btn next" id="modalNextProjectBtn" title="Next Project">
+          <span>Next Project</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Target Cursor (ReactBits-style Interactive Snapping Reticle) -->
   <div class="target-cursor" id="targetCursor" aria-hidden="true">
     <div class="target-cursor-inner" id="targetCursorInner">
@@ -914,7 +1131,7 @@
   <script src="assets/vendor/gsap.min.js"></script>
   <script src="assets/vendor/ScrollTrigger.min.js"></script>
   <script src="assets/vendor/lenis.min.js"></script>
-  <script src="app.js?v=10.1"></script>
+  <script src="app.js?v=13.0"></script>
 </body>
 
 </html>

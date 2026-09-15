@@ -1084,112 +1084,155 @@
       }
     }
 
-    // Projects Data Matrix (9 Featured Projects)
+    // Projects Data Matrix (10 Featured Real Projects from "Projects for portfolio")
     const PROJECTS_DATA = [
       {
         id: 1,
-        title: "LUMINA HYPERCAR",
-        category: "AUTOMOTIVE CONCEPT",
-        tag: "Concept HMI",
-        desc: "Next-generation generative telemetry & spatial HMI interface for autonomous electric hypercars.",
-        img: "assets/projects/project_1.jpg",
+        title: "AURELIUM",
+        category: "SHOPIFY 2.0 / LUXURY APPAREL",
+        tag: "Custom Liquid",
+        desc: "Custom embroidery & luxury streetwear flagship engineered with interactive customization & high-converting product pages.",
+        img: "Projects for portfolio/aurelium/aurelium-header.png",
+        desktopImg: "Projects for portfolio/aurelium/aurelium-desktop.png",
+        mobileImg: "Projects for portfolio/aurelium/aurelium-mobile.png",
+        liveUrl: "https://aurelium-9857.myshopify.com/",
         accent: "#38bdf8",
-        bgDark: "#090d16",
-        link: "#contact"
+        bgDark: "#0b1320",
+        link: "https://aurelium-9857.myshopify.com/"
       },
       {
         id: 2,
-        title: "KINETIX MOTION",
-        category: "CREATIVE ENGINEERING",
-        tag: "WebGL 3D",
-        desc: "High-frequency WebGL 3D motion design showcase with real-time physical simulation physics.",
-        img: "assets/projects/project_2.jpg",
-        accent: "#f43f5e",
-        bgDark: "#150d18",
-        link: "#contact"
+        title: "BUTCHERY MEAT SHOP",
+        category: "SHOPIFY 2.0 / ARTISAN FOOD",
+        tag: "E-Commerce",
+        desc: "Handcrafted meat shop platform featuring ethical sourcing transparency, dynamic cuts selector, and cold-chain ordering.",
+        img: "Projects for portfolio/butchery/butchery-header.png",
+        desktopImg: "Projects for portfolio/butchery/butchery-desktop.png",
+        mobileImg: "Projects for portfolio/butchery/butchery-mobile.png",
+        liveUrl: "https://butchery-740.myshopify.com/",
+        accent: "#ef4444",
+        bgDark: "#1a0a0a",
+        link: "https://butchery-740.myshopify.com/"
       },
       {
         id: 3,
-        title: "AURA SPATIAL OS",
-        category: "SPATIAL COMPUTING",
-        tag: "VisionOS",
-        desc: "VisionOS volumetric spatial interface with fluid gesture physics and contextual workspaces.",
-        img: "assets/projects/project_3.jpg",
-        accent: "#818cf8",
-        bgDark: "#0e111d",
-        link: "#contact"
+        title: "CENTATRAINER",
+        category: "PERFORMANCE APPAREL",
+        tag: "Vintage Punk Wave",
+        desc: "High-octane athletic performance and streetwear collection inspired by vintage Japanese wave aesthetics and bespoke typography.",
+        img: "Projects for portfolio/centa/centa-header.png",
+        desktopImg: "Projects for portfolio/centa/centa-desktop.png",
+        mobileImg: "Projects for portfolio/centa/centa-mobile.png",
+        liveUrl: "https://centatrainer.com/",
+        accent: "#f43f5e",
+        bgDark: "#181210",
+        link: "https://centatrainer.com/"
       },
       {
         id: 4,
-        title: "CHRONO WEALTH OS",
-        category: "FINTECH ECOSYSTEM",
-        tag: "Fintech Platform",
-        desc: "Algorithmic multi-asset portfolio command center with ultra-low latency data streaming.",
-        img: null,
-        accent: "#10b981",
-        bgDark: "#061814",
-        link: "#contact"
+        title: "FANTA BENCHO",
+        category: "BRAND EXPERIENCE",
+        tag: "Interactive Web",
+        desc: "Dynamic beverage showcase with bold citrus visual hierarchy, fluid animations, and high-impact brand storytelling.",
+        img: "Projects for portfolio/fanta/Fanta-header.png",
+        desktopImg: "Projects for portfolio/fanta/Fanta-header.png",
+        desktopVideo: "Projects for portfolio/fanta/fanta-demo.mp4",
+        mobileImg: "Projects for portfolio/fanta/Fanta-header.png",
+        mobileVideo: "Projects for portfolio/fanta/fanta-demo.mp4",
+        liveUrl: "https://fanta-jyregnb0.myshopify.com/",
+        accent: "#f97316",
+        bgDark: "#1f1003",
+        link: "https://fanta-jyregnb0.myshopify.com/"
       },
       {
         id: 5,
-        title: "NEURAL STUDIO X",
-        category: "AI GENERATIVE RESEARCH",
-        tag: "AI Architecture",
-        desc: "Deep-learning prompt-to-3D visual engine with real-time neural diffusion pipelines.",
-        img: null,
-        accent: "#a855f7",
-        bgDark: "#150b24",
-        link: "#contact"
+        title: "HAWLUCHA PROTEIN",
+        category: "SHOPIFY 2.0 / FITNESS",
+        tag: "Sports Nutrition",
+        desc: "Premium athletic supplement brand designed for maximum impact, performance nutrition subscriptions, and rapid checkout.",
+        img: "Projects for portfolio/Hawlucha/hawlucha-header.png",
+        desktopImg: "Projects for portfolio/Hawlucha/hawlucha-desktop.png",
+        mobileImg: "Projects for portfolio/Hawlucha/hawlucha-mobile.png",
+        liveUrl: "https://supplement-8817.myshopify.com/",
+        accent: "#84cc16",
+        bgDark: "#0d1306",
+        link: "https://supplement-8817.myshopify.com/"
       },
       {
         id: 6,
-        title: "VELOCITY KINETIC",
-        category: "LUXURY COMMERCE",
-        tag: "Next.js & Shopify",
-        desc: "Editorial brand identity, interactive 3D product customizer, and headless e-commerce.",
-        img: null,
-        accent: "#f59e0b",
-        bgDark: "#1a1205",
-        link: "#contact"
+        title: "LUNOX LIGHTING",
+        category: "CONSUMER HARDWARE",
+        tag: "Smart Projections",
+        desc: "Magical holiday and architectural projection system store engineered with interactive pattern showcases and video testimonials.",
+        img: "Projects for portfolio/lunox/Lunox-header.png",
+        desktopImg: "Projects for portfolio/lunox/Lunox-desktop.png",
+        mobileImg: "Projects for portfolio/lunox/Lunox-mobile.png",
+        liveUrl: "https://christmas-projector-lights.myshopify.com/",
+        accent: "#eab308",
+        bgDark: "#151307",
+        link: "https://christmas-projector-lights.myshopify.com/"
       },
       {
         id: 7,
-        title: "MONOLITH SOUND",
-        category: "AUDIO HARDWARE / UI",
-        tag: "Spatial Audio",
-        desc: "Analog-digital hybrid synthesizer interface with dynamic harmonic spectrum visualizers.",
-        img: null,
-        accent: "#06b6d4",
-        bgDark: "#05151b",
-        link: "#contact"
+        title: "MANGA MINT",
+        category: "SHOPIFY 2.0 / POP CULTURE",
+        tag: "Collectibles Hub",
+        desc: "Specialty manga and collectible store featuring volume filtering, pre-order queues, and an authentic manga reader community vibe.",
+        img: "Projects for portfolio/manga-mint/manga-header.png",
+        desktopImg: "Projects for portfolio/manga-mint/manga-desktop.png",
+        mobileImg: "Projects for portfolio/manga-mint/manga-mobile.png",
+        liveUrl: "https://mangamint-2.myshopify.com/",
+        accent: "#f97316",
+        bgDark: "#180d05",
+        link: "https://mangamint-2.myshopify.com/"
       },
       {
         id: 8,
-        title: "SYNAPSE BIOMETRICS",
-        category: "HEALTH BIOTECH",
-        tag: "Biotech Dashboard",
-        desc: "Preventative circadian & vital biomarker monitoring dashboard with predictive telemetry.",
-        img: null,
-        accent: "#ec4899",
-        bgDark: "#1a0814",
-        link: "#contact"
+        title: "SAGE BOTANICALS",
+        category: "LUXURY SKINCARE",
+        tag: "Organic Beauty",
+        desc: "Clean botanical cosmetics & restorative skin wellness flagship featuring routine quizzes, clinical trial cards & minimalist elegance.",
+        img: "Projects for portfolio/sage/sage-header.png",
+        desktopImg: "Projects for portfolio/sage/sage-desktop.png",
+        mobileImg: "Projects for portfolio/sage/sage-mobile.png",
+        liveUrl: "https://sage-10102.myshopify.com/",
+        accent: "#d4af37",
+        bgDark: "#19150d",
+        link: "https://sage-10102.myshopify.com/"
       },
       {
         id: 9,
-        title: "ECLIPSE STUDIOS",
-        category: "CREATIVE PRODUCTION",
-        tag: "Motion Direction",
-        desc: "Avant-garde film production agency site with dynamic WebGL showreels and typography.",
-        img: null,
-        accent: "#e2e8f0",
-        bgDark: "#111318",
-        link: "#contact"
+        title: "VLORA FINE JEWELRY",
+        category: "FINE JEWELRY / LUXURY",
+        tag: "Diamonds & Bands",
+        desc: "Luxury wedding ring and fine diamond atelier with carat filtering, 360-degree band inspection & bespoke appointment booking.",
+        img: "Projects for portfolio/Vlora/vlora-header.png",
+        desktopImg: "Projects for portfolio/Vlora/vlora-desktop.png",
+        mobileImg: "Projects for portfolio/Vlora/vlora-mobile.png",
+        liveUrl: "https://wedding-ring-113.myshopify.com/",
+        accent: "#e2b887",
+        bgDark: "#16120e",
+        link: "https://wedding-ring-113.myshopify.com/"
+      },
+      {
+        id: 10,
+        title: "ZHUXIN CLINICAL",
+        category: "CLINICAL DERMATOLOGY",
+        tag: "Active Serums",
+        desc: "Clinical-grade active serum storefront focusing on scientific formulations, clinical trial statistics, and minimalist aesthetic.",
+        img: "Projects for portfolio/zhuxin/zhuxin-header.png",
+        desktopImg: "Projects for portfolio/zhuxin/zhuxin-desktop.png",
+        mobileImg: "Projects for portfolio/zhuxin/zhuxin-mobile.png",
+        liveUrl: "https://serum-9929.myshopify.com/",
+        accent: "#d97706",
+        bgDark: "#161109",
+        link: "https://serum-9929.myshopify.com/"
       }
     ];
 
     const TOTAL_CARDS = PROJECTS_DATA.length;
 
-    // WebGL Renderer Setup
+    // WebGL Renderer Setup (True Color - No Tone Mapping Distortion)
     const renderer = new THREE.WebGLRenderer({
       canvas: canvasEl,
       antialias: true,
@@ -1197,20 +1240,22 @@
       powerPreference: 'high-performance'
     });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.05;
+    if ('outputColorSpace' in renderer) {
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+    }
+    renderer.toneMapping = THREE.NoToneMapping;
 
     const scene = new THREE.Scene();
 
-    // Studio Lighting
-    const ambLight = new THREE.AmbientLight(0xffffff, 0.92);
+    // Studio Lighting (Chassis and accents only - Screen Mesh uses unlit MeshBasicMaterial)
+    const ambLight = new THREE.AmbientLight(0xffffff, 0.95);
     scene.add(ambLight);
 
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.75);
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.7);
     dirLight1.position.set(6, 9, 8);
     scene.add(dirLight1);
 
-    const dirLight2 = new THREE.DirectionalLight(0xe7e8eb, 0.45);
+    const dirLight2 = new THREE.DirectionalLight(0xe7e8eb, 0.4);
     dirLight2.position.set(-6, -5, -4);
     scene.add(dirLight2);
 
@@ -1232,193 +1277,219 @@
     curve.curveType = 'catmullrom';
     curve.tension = 0.5;
 
-    // Card Plane Geometry with subtle cylindrical curvature
-    const CARD_W = 3.65;
-    const CARD_H = 2.4;
-    const cardGeo = new THREE.PlaneGeometry(CARD_W, CARD_H, 32, 16);
-    const posAttr = cardGeo.attributes.position;
-    for (let i = 0; i < posAttr.count; i++) {
-      const px = posAttr.getX(i);
-      posAttr.setZ(i, -Math.pow(px / (CARD_W * 0.5), 2) * 0.18);
-    }
-    cardGeo.computeVertexNormals();
+    // Premium Studio Chassis & Display Dimensions
+    // Width 3.84, Height 2.28 - matching modern 16:9.5 panoramic studio displays
+    const CHASSIS_W = 3.84;
+    const CHASSIS_H = 2.28;
+    const chassisGeo = new THREE.PlaneGeometry(CHASSIS_W, CHASSIS_H);
 
-    // High-resolution procedural texture generator for mockups
-    function createProceduralCardTexture(data, idx) {
-      const w = 1024;
-      const h = 672;
+    // Screen Dimensions: Width 3.696, Height 1.836 (Ratio ~ 2.013, exactly matching project header images)
+    const SCREEN_W = 3.696;
+    const SCREEN_H = 1.836;
+    const screenGeo = new THREE.PlaneGeometry(SCREEN_W, SCREEN_H);
+
+    // High-resolution Procedural Chassis Texture Generator (Studio Frame, Traffic Lights, Clean URL Capsule)
+    function createChassisTexture(data, idx) {
+      const w = 1920;
+      const h = 1140;
       const cvs = document.createElement('canvas');
       cvs.width = w;
       cvs.height = h;
       const ctx = cvs.getContext('2d');
 
-      // Background Gradient
-      const grad = ctx.createLinearGradient(0, 0, w, h);
-      grad.addColorStop(0, data.bgDark || '#0b0f19');
-      grad.addColorStop(1, '#020408');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, w, h);
+      // Chassis Body Background
+      ctx.fillStyle = '#0a0d15';
+      ctx.beginPath();
+      ctx.roundRect(0, 0, w, h, 24);
+      ctx.fill();
 
-      // Subtle ambient glowing orb
-      const radGrad = ctx.createRadialGradient(w * 0.72, h * 0.35, 10, w * 0.72, h * 0.35, 380);
-      radGrad.addColorStop(0, (data.accent || '#38bdf8') + '33');
-      radGrad.addColorStop(1, 'transparent');
-      ctx.fillStyle = radGrad;
-      ctx.fillRect(0, 0, w, h);
+      // Outer Bevel Edge Border
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.14)';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
 
-      // Browser Mockup Top Bar
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
-      ctx.fillRect(0, 0, w, 52);
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
-      ctx.fillRect(0, 52, w, 1);
+      // Top Chrome Header Bar
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
+      ctx.beginPath();
+      ctx.roundRect(2, 2, w - 4, 110, [22, 22, 0, 0]);
+      ctx.fill();
 
-      // Traffic Light Buttons
+      // Header Divider Line
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(2, 112);
+      ctx.lineTo(w - 2, 112);
+      ctx.stroke();
+
+      // macOS Traffic Light Buttons
       const dotColors = ['#ff5f56', '#ffbd2e', '#27c93f'];
       dotColors.forEach((color, dIdx) => {
         ctx.fillStyle = color;
         ctx.beginPath();
-        ctx.arc(36 + dIdx * 20, 26, 6, 0, Math.PI * 2);
+        ctx.arc(52 + dIdx * 28, 56, 7.5, 0, Math.PI * 2);
         ctx.fill();
       });
 
-      // Browser URL Pill
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.06)';
+      // Browser URL Pill Capsule
+      const pillW = 480;
+      const pillH = 46;
+      const pillX = (w - pillW) / 2;
+      const pillY = 33;
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.055)';
       ctx.beginPath();
-      ctx.roundRect(w / 2 - 140, 12, 280, 28, 6);
+      ctx.roundRect(pillX, pillY, pillW, pillH, 8);
       ctx.fill();
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-      ctx.font = '600 12px "Plus Jakarta Sans", sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('https://' + data.title.toLowerCase().replace(/[^a-z0-9]/g, '') + '.io', w / 2, 30);
-
-      // UI Grid lines
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.09)';
       ctx.lineWidth = 1;
-      for (let y = 100; y < h; y += 70) {
-        ctx.beginPath();
-        ctx.moveTo(40, y);
-        ctx.lineTo(w - 40, y);
-        ctx.stroke();
-      }
-
-      // Project Number Tag
-      ctx.fillStyle = data.accent || '#38bdf8';
-      ctx.font = '800 14px "Plus Jakarta Sans", sans-serif';
-      ctx.textAlign = 'left';
-      ctx.fillText('0' + (idx + 1) + ' // ' + data.category, 54, 120);
-
-      // Project Large Title
-      ctx.fillStyle = '#ffffff';
-      ctx.font = '900 48px "Montserrat", sans-serif';
-      ctx.fillText(data.title, 54, 175);
-
-      // Subtitle / Description
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
-      ctx.font = '400 18px "Plus Jakarta Sans", sans-serif';
-      const words = data.desc.split(' ');
-      let line = '';
-      let lineY = 220;
-      for (let n = 0; n < words.length; n++) {
-        const testLine = line + words[n] + ' ';
-        if (ctx.measureText(testLine).width > 480 && n > 0) {
-          ctx.fillText(line, 54, lineY);
-          line = words[n] + ' ';
-          lineY += 28;
-        } else {
-          line = testLine;
-        }
-      }
-      ctx.fillText(line, 54, lineY);
-
-      // Interactive UI Mockup Dashboard Graphic (Right Side)
-      const cardX = 580;
-      const cardY = 120;
-      const cardW = 390;
-      const cardH = 480;
-
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
-      ctx.beginPath();
-      ctx.roundRect(cardX, cardY, cardW, cardH, 16);
-      ctx.fill();
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
       ctx.stroke();
 
-      // Mini chart / waveform inside UI panel
-      ctx.strokeStyle = data.accent || '#38bdf8';
-      ctx.lineWidth = 3;
+      // Secure Padlock Dot
+      ctx.fillStyle = '#10b981';
       ctx.beginPath();
-      for (let x = 0; x <= cardW - 60; x += 15) {
-        const py = cardY + 220 + Math.sin((x + idx * 40) * 0.04) * 45 + Math.cos(x * 0.08) * 15;
-        if (x === 0) ctx.moveTo(cardX + 30 + x, py);
-        else ctx.lineTo(cardX + 30 + x, py);
-      }
-      ctx.stroke();
-
-      // UI stat cards
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.07)';
-      ctx.beginPath();
-      ctx.roundRect(cardX + 30, cardY + 30, 155, 90, 10);
-      ctx.fill();
-      ctx.roundRect(cardX + 205, cardY + 30, 155, 90, 10);
+      ctx.arc(pillX + 22, pillY + pillH / 2, 3.5, 0, Math.PI * 2);
       ctx.fill();
 
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
-      ctx.font = '600 11px "Plus Jakarta Sans", sans-serif';
-      ctx.fillText('ACTIVE TELEMETRY', cardX + 45, cardY + 58);
-      ctx.fillText('EFFICIENCY RATING', cardX + 220, cardY + 58);
-
-      ctx.fillStyle = '#ffffff';
-      ctx.font = '800 24px "Montserrat", sans-serif';
-      ctx.fillText('99.4%', cardX + 45, cardY + 96);
-      ctx.fillText('60 FPS', cardX + 220, cardY + 96);
-
-      // Bottom Tech Badge
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
-      ctx.beginPath();
-      ctx.roundRect(54, h - 85, 140, 36, 18);
-      ctx.fill();
-      ctx.fillStyle = data.accent || '#38bdf8';
-      ctx.font = '700 12px "Plus Jakarta Sans", sans-serif';
+      // URL Hostname
+      ctx.fillStyle = 'rgba(203, 213, 225, 0.8)';
+      ctx.font = '600 16px "Plus Jakarta Sans", sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText(data.tag || 'CASE STUDY', 124, h - 62);
+      const cleanUrl = 'https://' + (data.title || '').toLowerCase().replace(/[^a-z0-9]/g, '') + '.myshopify.com';
+      ctx.fillText(cleanUrl, w / 2 + 10, pillY + 28);
+
+      // Project Category Tag (Right Side)
+      ctx.fillStyle = data.accent || '#ff2a44';
+      ctx.font = '800 15px "Plus Jakarta Sans", sans-serif';
+      ctx.textAlign = 'right';
+      const catText = '0' + (idx + 1) + ' // ' + (data.category || 'SHOPIFY 2.0');
+      ctx.fillText(catText, w - 50, 62);
+
+      // Screen Cutout Frame in Backplate
+      const screenX = 36;
+      const screenY = 136;
+      const screenW = 1848;
+      const screenH = 918;
+
+      ctx.fillStyle = '#06080c';
+      ctx.beginPath();
+      ctx.roundRect(screenX, screenY, screenW, screenH, 8);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Bottom Hardware Footer Bar
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+      ctx.font = '700 13px "Plus Jakarta Sans", sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(data.title + ' — ' + (data.tag || 'CASE STUDY'), screenX + 6, h - 26);
+
+      ctx.textAlign = 'right';
+      ctx.fillStyle = data.accent || '#ff2a44';
+      ctx.fillText('CLICK DISPLAY TO PREVIEW SITE ↗', w - screenX - 6, h - 26);
 
       const tex = new THREE.CanvasTexture(cvs);
+      if ('colorSpace' in tex) tex.colorSpace = THREE.SRGBColorSpace;
       tex.minFilter = THREE.LinearFilter;
       tex.generateMipmaps = false;
       return tex;
     }
 
-    // Load textures and construct meshes
+    // High-resolution Screen Fallback Texture (while image asset is loading)
+    function createFallbackScreenTexture(data, idx) {
+      const cvs = document.createElement('canvas');
+      cvs.width = 1848;
+      cvs.height = 918;
+      const ctx = cvs.getContext('2d');
+
+      ctx.fillStyle = '#070a10';
+      ctx.fillRect(0, 0, cvs.width, cvs.height);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '900 46px "Montserrat", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(data.title, cvs.width / 2, cvs.height / 2 - 12);
+
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+      ctx.font = '600 18px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText(data.category || 'SHOPIFY 2.0', cvs.width / 2, cvs.height / 2 + 36);
+
+      const tex = new THREE.CanvasTexture(cvs);
+      if ('colorSpace' in tex) tex.colorSpace = THREE.SRGBColorSpace;
+      tex.minFilter = THREE.LinearFilter;
+      tex.generateMipmaps = false;
+      return tex;
+    }
+
+    // Load textures and construct luxury 3D card presentations
+    const cardGroups = [];
     const cardMeshes = [];
     const textureLoader = new THREE.TextureLoader();
 
     PROJECTS_DATA.forEach((data, i) => {
-      const defaultTex = createProceduralCardTexture(data, i);
-      const mat = new THREE.MeshStandardMaterial({
-        map: defaultTex,
-        roughness: 0.22,
-        metalness: 0.12,
-        side: THREE.DoubleSide,
+      const cardGroup = new THREE.Group();
+      cardGroup.userData = { index: i, project: data };
+
+      // 1. Sleek Chassis Frame Backplate
+      const chassisTex = createChassisTexture(data, i);
+      const chassisMat = new THREE.MeshBasicMaterial({
+        map: chassisTex,
+        toneMapped: false,
         transparent: true,
         opacity: 1.0
       });
+      const chassisMesh = new THREE.Mesh(chassisGeo, chassisMat);
+      chassisMesh.userData = { index: i, project: data, group: cardGroup };
+      cardGroup.add(chassisMesh);
 
-      // If project has an image file, load image texture seamlessly
+      // 2. Pure True-Color Display Screen Mesh (Unlit MeshBasicMaterial - 100% True To Original Asset)
+      const fallbackTex = createFallbackScreenTexture(data, i);
+      const screenMat = new THREE.MeshBasicMaterial({
+        map: fallbackTex,
+        toneMapped: false,
+        transparent: false,
+        opacity: 1.0
+      });
+      const screenMesh = new THREE.Mesh(screenGeo, screenMat);
+      screenMesh.position.set(0, -0.048, 0.01);
+      screenMesh.userData = { index: i, project: data, group: cardGroup };
+      cardGroup.add(screenMesh);
+
+      // Load original image with 100% color fidelity
       if (data.img) {
         textureLoader.load(data.img, (loadedTex) => {
+          if ('colorSpace' in loadedTex) {
+            loadedTex.colorSpace = THREE.SRGBColorSpace;
+          } else if ('encoding' in loadedTex) {
+            loadedTex.encoding = THREE.sRGBEncoding;
+          }
           loadedTex.minFilter = THREE.LinearFilter;
+          loadedTex.magFilter = THREE.LinearFilter;
           loadedTex.generateMipmaps = true;
-          mat.map = loadedTex;
-          mat.needsUpdate = true;
+
+          // Aspect ratio fitting (cover without distorting pixel proportions):
+          if (loadedTex.image && loadedTex.image.width && loadedTex.image.height) {
+            const imgAspect = loadedTex.image.width / loadedTex.image.height;
+            const screenAspect = SCREEN_W / SCREEN_H;
+            if (imgAspect > screenAspect) {
+              loadedTex.repeat.set(screenAspect / imgAspect, 1);
+              loadedTex.offset.set((1 - screenAspect / imgAspect) / 2, 0);
+            } else {
+              loadedTex.repeat.set(1, imgAspect / screenAspect);
+              loadedTex.offset.set(0, (1 - imgAspect / screenAspect) / 2);
+            }
+          }
+
+          screenMat.map = loadedTex;
+          screenMat.needsUpdate = true;
         }, undefined, (err) => {
           console.warn('Image load error for card', i, err);
         });
       }
 
-      const mesh = new THREE.Mesh(cardGeo, mat);
-      mesh.userData = { index: i, project: data };
-      scene.add(mesh);
-      cardMeshes.push(mesh);
+      scene.add(cardGroup);
+      cardGroups.push(cardGroup);
+      cardMeshes.push(screenMesh, chassisMesh);
     });
 
     // Raycasting for interactive card hovering & clicking
@@ -1475,6 +1546,8 @@
       const targetIdx = Math.max(0, Math.min(TOTAL_CARDS - 1, index));
       targetCarouselIndex = targetIdx;
       updateActiveHUD();
+
+      if (isModalOpen) return; // Never scroll background page while modal is active
 
       if (!sectionEl) return;
       const sectionTop = sectionEl.getBoundingClientRect().top + window.pageYOffset;
@@ -1563,25 +1636,336 @@
       raycaster.setFromCamera(mouseNDC, camera);
       const intersects = raycaster.intersectObjects(cardMeshes);
       if (intersects.length > 0) {
+        e.preventDefault();
+        e.stopPropagation();
         const clickedMesh = intersects[0].object;
         if (clickedMesh.userData && typeof clickedMesh.userData.index === 'number') {
           const clickedIdx = clickedMesh.userData.index;
-          // If already centered, follow link
-          if (Math.abs(currentCarouselIndex - clickedIdx) < 0.35) {
-            const proj = clickedMesh.userData.project;
-            if (proj && proj.link) {
-              if (proj.link.startsWith('#')) {
-                const targetEl = document.querySelector(proj.link);
-                if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth' });
-              } else {
-                window.open(proj.link, '_blank');
-              }
-            }
-          } else {
-            // Smoothly center this project card and sync scroll
-            goToProject(clickedIdx, true);
-          }
+          // Open the luxury project preview modal immediately
+          openProjectModal(clickedIdx);
         }
+      }
+    });
+
+    // Explore Project button on HUD also opens preview modal
+    if (hudBtn) {
+      hudBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openProjectModal(activeCardIndex);
+      });
+    }
+
+    /* -------------------------------------------------------------- */
+    /* LUXURY PROJECT PREVIEW MODAL CONTROLLER (DESKTOP & MOBILE)     */
+    /* -------------------------------------------------------------- */
+    const modalEl = document.getElementById('projectModal');
+    const modalBackdrop = document.getElementById('projectModalBackdrop');
+    const modalCloseBtn = document.getElementById('modalCloseBtn');
+    const trafficCloseDot = document.getElementById('trafficCloseDot');
+    const modalCategoryBadge = document.getElementById('modalCategoryBadge');
+    const modalProjectTitle = document.getElementById('modalProjectTitle');
+    const modalLiveLinkPill = document.getElementById('modalLiveLinkPill');
+    const browserUrlText = document.getElementById('browserUrlText');
+    const browserOpenLink = document.getElementById('browserOpenLink');
+    const viewBtnDesktop = document.getElementById('viewBtnDesktop');
+    const viewBtnMobile = document.getElementById('viewBtnMobile');
+    const modalPreviewStage = document.getElementById('modalPreviewStage');
+    const desktopFrameWrap = document.getElementById('desktopFrameWrap');
+    const mobileFrameWrap = document.getElementById('mobileFrameWrap');
+    const desktopScrollViewport = document.getElementById('desktopScrollViewport');
+    const mobileScrollViewport = document.getElementById('mobileScrollViewport');
+    const desktopPreviewImg = document.getElementById('desktopPreviewImg');
+    const desktopPreviewVideo = document.getElementById('desktopPreviewVideo');
+    const mobilePreviewImg = document.getElementById('mobilePreviewImg');
+    const mobilePreviewVideo = document.getElementById('mobilePreviewVideo');
+    const desktopScrollHint = document.getElementById('desktopScrollHint');
+    const mobileScrollHint = document.getElementById('mobileScrollHint');
+    const desktopScrollTopBtn = document.getElementById('desktopScrollTopBtn');
+    const mobileScrollTopBtn = document.getElementById('mobileScrollTopBtn');
+    const modalPrevProjectBtn = document.getElementById('modalPrevProjectBtn');
+    const modalNextProjectBtn = document.getElementById('modalNextProjectBtn');
+    const modalCurrentIndex = document.getElementById('modalCurrentIndex');
+    const modalTotalProjects = document.getElementById('modalTotalProjects');
+
+    let modalActiveIndex = 0;
+    let modalCurrentView = 'desktop';
+    let isModalOpen = false;
+    let modalLockedScrollY = 0;
+
+    function lockWindowScroll() {
+      if (isModalOpen) {
+        const currentY = window.pageYOffset || document.documentElement.scrollTop || 0;
+        if (Math.abs(currentY - modalLockedScrollY) > 0.5) {
+          window.scrollTo(0, modalLockedScrollY);
+        }
+      }
+    }
+
+    function openProjectModal(index) {
+      if (!modalEl) return;
+      modalActiveIndex = Math.max(0, Math.min(TOTAL_CARDS - 1, index));
+      const project = PROJECTS_DATA[modalActiveIndex];
+      if (!project) return;
+
+      // Capture exact page scroll position so the background stays locked at Projects section
+      modalLockedScrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+
+      // Update meta
+      if (modalCategoryBadge) modalCategoryBadge.textContent = project.category || 'SHOPIFY 2.0';
+      if (modalProjectTitle) modalProjectTitle.textContent = project.title;
+      if (modalLiveLinkPill) modalLiveLinkPill.href = project.liveUrl || project.link || '#';
+      if (browserUrlText) browserUrlText.textContent = project.liveUrl || project.link || 'https://shopify.com';
+      if (browserOpenLink) browserOpenLink.href = project.liveUrl || project.link || '#';
+
+      // Update project counter
+      if (modalCurrentIndex) {
+        modalCurrentIndex.textContent = (modalActiveIndex + 1 < 10 ? '0' : '') + (modalActiveIndex + 1);
+      }
+      if (modalTotalProjects) {
+        modalTotalProjects.textContent = (TOTAL_CARDS < 10 ? '0' : '') + TOTAL_CARDS;
+      }
+
+      // Load media for both desktop and mobile
+      loadProjectMedia(project);
+
+      // Reset scroll position of both frames
+      if (desktopScrollViewport) desktopScrollViewport.scrollTop = 0;
+      if (mobileScrollViewport) mobileScrollViewport.scrollTop = 0;
+      if (desktopScrollHint) desktopScrollHint.classList.remove('is-hidden');
+      if (mobileScrollHint) mobileScrollHint.classList.remove('is-hidden');
+      if (desktopScrollTopBtn) desktopScrollTopBtn.classList.remove('is-visible');
+      if (mobileScrollTopBtn) mobileScrollTopBtn.classList.remove('is-visible');
+
+      // Set view
+      setViewMode(modalCurrentView, false);
+
+      // Lock Lenis smooth scroll while modal is open
+      if (typeof lenis !== 'undefined' && lenis && typeof lenis.stop === 'function') {
+        lenis.stop();
+      }
+
+      // Open modal
+      modalEl.classList.add('is-open');
+      modalEl.setAttribute('aria-hidden', 'false');
+      document.documentElement.classList.add('project-modal-open');
+      document.body.classList.add('project-modal-open');
+      isModalOpen = true;
+
+      // Add scroll listener to guarantee background position stays locked in place
+      window.addEventListener('scroll', lockWindowScroll, { passive: true });
+
+      // Smoothly align the 3D ribbon carousel without scrolling the page window
+      targetCarouselIndex = modalActiveIndex;
+      updateActiveHUD();
+    }
+
+    function closeProjectModal() {
+      if (!modalEl) return;
+      modalEl.classList.remove('is-open');
+      modalEl.setAttribute('aria-hidden', 'true');
+      document.documentElement.classList.remove('project-modal-open');
+      document.body.classList.remove('project-modal-open');
+      isModalOpen = false;
+
+      // Remove window scroll lock listener
+      window.removeEventListener('scroll', lockWindowScroll);
+
+      // Restore exact scroll position on projects section
+      window.scrollTo(0, modalLockedScrollY);
+      if (typeof lenis !== 'undefined' && lenis && typeof lenis.scrollTo === 'function') {
+        lenis.scrollTo(modalLockedScrollY, { immediate: true });
+      }
+
+      // Resume Lenis smooth scroll
+      if (typeof lenis !== 'undefined' && lenis && typeof lenis.start === 'function') {
+        lenis.start();
+      }
+
+      // Pause videos if playing
+      if (desktopPreviewVideo) {
+        desktopPreviewVideo.pause();
+        desktopPreviewVideo.src = '';
+      }
+      if (mobilePreviewVideo) {
+        mobilePreviewVideo.pause();
+        mobilePreviewVideo.src = '';
+      }
+    }
+
+    function setViewMode(view, animate = true) {
+      modalCurrentView = view;
+      const switcher = document.querySelector('.modal-view-switcher');
+      if (switcher) switcher.setAttribute('data-active', view);
+
+      if (view === 'desktop') {
+        if (viewBtnDesktop) {
+          viewBtnDesktop.classList.add('active');
+          viewBtnDesktop.setAttribute('aria-selected', 'true');
+        }
+        if (viewBtnMobile) {
+          viewBtnMobile.classList.remove('active');
+          viewBtnMobile.setAttribute('aria-selected', 'false');
+        }
+        if (desktopFrameWrap) desktopFrameWrap.style.display = 'flex';
+        if (mobileFrameWrap) mobileFrameWrap.style.display = 'none';
+        if (modalPreviewStage) modalPreviewStage.setAttribute('data-active-view', 'desktop');
+      } else {
+        if (viewBtnDesktop) {
+          viewBtnDesktop.classList.remove('active');
+          viewBtnDesktop.setAttribute('aria-selected', 'false');
+        }
+        if (viewBtnMobile) {
+          viewBtnMobile.classList.add('active');
+          viewBtnMobile.setAttribute('aria-selected', 'true');
+        }
+        if (desktopFrameWrap) desktopFrameWrap.style.display = 'none';
+        if (mobileFrameWrap) mobileFrameWrap.style.display = 'flex';
+        if (modalPreviewStage) modalPreviewStage.setAttribute('data-active-view', 'mobile');
+      }
+    }
+
+    function loadProjectMedia(project) {
+      // Desktop View
+      if (project.desktopVideo) {
+        if (desktopPreviewImg) desktopPreviewImg.style.display = 'none';
+        if (desktopPreviewVideo) {
+          desktopPreviewVideo.style.display = 'block';
+          desktopPreviewVideo.src = project.desktopVideo;
+          desktopPreviewVideo.load();
+          desktopPreviewVideo.play().catch(() => {});
+        }
+      } else {
+        if (desktopPreviewVideo) {
+          desktopPreviewVideo.pause();
+          desktopPreviewVideo.style.display = 'none';
+          desktopPreviewVideo.src = '';
+        }
+        if (desktopPreviewImg) {
+          desktopPreviewImg.style.display = 'block';
+          desktopPreviewImg.src = project.desktopImg || project.img || '';
+        }
+      }
+
+      // Mobile View
+      if (project.mobileVideo) {
+        if (mobilePreviewImg) mobilePreviewImg.style.display = 'none';
+        if (mobilePreviewVideo) {
+          mobilePreviewVideo.style.display = 'block';
+          mobilePreviewVideo.src = project.mobileVideo;
+          mobilePreviewVideo.load();
+          mobilePreviewVideo.play().catch(() => {});
+        }
+      } else {
+        if (mobilePreviewVideo) {
+          mobilePreviewVideo.pause();
+          mobilePreviewVideo.style.display = 'none';
+          mobilePreviewVideo.src = '';
+        }
+        if (mobilePreviewImg) {
+          mobilePreviewImg.style.display = 'block';
+          mobilePreviewImg.src = project.mobileImg || project.img || '';
+        }
+      }
+    }
+
+    // Scroll listeners for scroll hint and back-to-top button
+    if (desktopScrollViewport) {
+      desktopScrollViewport.addEventListener('scroll', () => {
+        const top = desktopScrollViewport.scrollTop;
+        if (desktopScrollHint) desktopScrollHint.classList.toggle('is-hidden', top > 50);
+        if (desktopScrollTopBtn) desktopScrollTopBtn.classList.toggle('is-visible', top > 240);
+      }, { passive: true });
+    }
+
+    if (mobileScrollViewport) {
+      mobileScrollViewport.addEventListener('scroll', () => {
+        const top = mobileScrollViewport.scrollTop;
+        if (mobileScrollHint) mobileScrollHint.classList.toggle('is-hidden', top > 50);
+        if (mobileScrollTopBtn) mobileScrollTopBtn.classList.toggle('is-visible', top > 240);
+      }, { passive: true });
+    }
+
+    if (desktopScrollTopBtn) {
+      desktopScrollTopBtn.addEventListener('click', () => {
+        if (desktopScrollViewport) desktopScrollViewport.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+
+    if (mobileScrollTopBtn) {
+      mobileScrollTopBtn.addEventListener('click', () => {
+        if (mobileScrollViewport) mobileScrollViewport.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+
+    // Modal Scroll Isolation: Ensure mouse wheel and touch scrolling stay inside the preview
+    // and never leak or scroll the background page behind the popup
+    if (modalEl) {
+      modalEl.addEventListener('wheel', (e) => {
+        const inScrollArea = e.target.closest('#desktopScrollViewport, #mobileScrollViewport');
+        if (!inScrollArea) {
+          e.preventDefault();
+        }
+        e.stopPropagation();
+      }, { passive: false });
+
+      modalEl.addEventListener('touchmove', (e) => {
+        const inScrollArea = e.target.closest('#desktopScrollViewport, #mobileScrollViewport');
+        if (!inScrollArea) {
+          e.preventDefault();
+        }
+        e.stopPropagation();
+      }, { passive: false });
+    }
+
+    [desktopScrollViewport, mobileScrollViewport].forEach((vp) => {
+      if (!vp) return;
+      vp.addEventListener('wheel', (e) => {
+        e.stopPropagation();
+      }, { passive: true });
+      vp.addEventListener('touchmove', (e) => {
+        e.stopPropagation();
+      }, { passive: true });
+    });
+
+    // Switcher controls
+    if (viewBtnDesktop) {
+      viewBtnDesktop.addEventListener('click', () => setViewMode('desktop', true));
+    }
+    if (viewBtnMobile) {
+      viewBtnMobile.addEventListener('click', () => setViewMode('mobile', true));
+    }
+
+    // Modal close controls
+    if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeProjectModal);
+    if (modalBackdrop) modalBackdrop.addEventListener('click', closeProjectModal);
+    if (trafficCloseDot) trafficCloseDot.addEventListener('click', closeProjectModal);
+
+    // Modal Prev / Next buttons
+    if (modalPrevProjectBtn) {
+      modalPrevProjectBtn.addEventListener('click', () => {
+        const prevIdx = (modalActiveIndex - 1 + TOTAL_CARDS) % TOTAL_CARDS;
+        openProjectModal(prevIdx);
+      });
+    }
+    if (modalNextProjectBtn) {
+      modalNextProjectBtn.addEventListener('click', () => {
+        const nextIdx = (modalActiveIndex + 1) % TOTAL_CARDS;
+        openProjectModal(nextIdx);
+      });
+    }
+
+    // Keyboard shortcuts for modal
+    window.addEventListener('keydown', (e) => {
+      if (!isModalOpen) return;
+      if (e.key === 'Escape') {
+        closeProjectModal();
+      } else if (e.key === 'ArrowLeft') {
+        const prevIdx = (modalActiveIndex - 1 + TOTAL_CARDS) % TOTAL_CARDS;
+        openProjectModal(prevIdx);
+      } else if (e.key === 'ArrowRight') {
+        const nextIdx = (modalActiveIndex + 1) % TOTAL_CARDS;
+        openProjectModal(nextIdx);
       }
     });
 
@@ -1676,12 +2060,12 @@
       const spacingAlongCurve = 0.088;
       const centerU = 0.5;
 
-      cardMeshes.forEach((mesh, i) => {
+      cardGroups.forEach((group, i) => {
         const offsetFromCenter = i - currentCarouselIndex;
         const u = centerU + offsetFromCenter * spacingAlongCurve;
 
         if (u < -0.05 || u > 1.05) {
-          mesh.visible = false;
+          group.visible = false;
           return;
         }
 
@@ -1700,20 +2084,25 @@
         binormVec.applyAxisAngle(tangent, bankAngle);
 
         const rotMatrix = new THREE.Matrix4().makeBasis(normVec, binormVec, tangent);
-        mesh.quaternion.setFromRotationMatrix(rotMatrix);
-        mesh.position.copy(pt);
+        group.quaternion.setFromRotationMatrix(rotMatrix);
+        group.position.copy(pt);
 
         // Scale: card in center fills frame at full size; off-center cards shrink naturally
         const distFromCenter = Math.abs(clampedU - 0.5);
         const isHovered = (i === hoveredCardIndex);
         const baseScale = Math.max(0.68, 1.0 - distFromCenter * 0.55);
-        const scale = isHovered ? baseScale * 1.06 : baseScale;
-        mesh.scale.set(scale, scale, scale);
+        const scale = isHovered ? baseScale * 1.05 : baseScale;
+        group.scale.set(scale, scale, scale);
 
-        // Edge fade-out
+        // Edge fade-out (Center card remains 100% solid with zero opacity loss or color degradation)
         const edgeAlpha = Math.max(0, Math.min(1, (0.48 - distFromCenter) * 8.0));
-        mesh.material.opacity = edgeAlpha;
-        mesh.visible = edgeAlpha > 0.01;
+        group.visible = edgeAlpha > 0.01;
+        group.traverse((child) => {
+          if (child.isMesh && child.material) {
+            child.material.transparent = edgeAlpha < 0.999;
+            child.material.opacity = edgeAlpha;
+          }
+        });
       });
 
       // Kinetic Headline Parallax (Counter-directional drifting)
