@@ -115,6 +115,298 @@
     }
   }
 
+  // =================================================================
+  // LUXURY FOOTER INTERACTIVE STRING ART & AUDIO SYNTHESIZER
+  // =================================================================
+  function initFooterInteractiveStringArt() {
+    const canvas = document.getElementById('footerStringCanvas');
+    const stage = document.getElementById('footerStringStage');
+    const soundBtn = document.getElementById('footerSoundToggleBtn');
+    const soundStatus = document.getElementById('footerSoundStatus');
+    const soundHint = document.getElementById('footerSoundHint');
+    const soundIconOn = document.querySelector('.icon-sound-on');
+    const soundIconOff = document.querySelector('.icon-sound-off');
+    const menuBtn = document.getElementById('footerMenuPillBtn');
+
+    if (!canvas || !stage) return;
+
+    const ctx = canvas.getContext('2d');
+    let width = 0;
+    let height = 0;
+    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    // Audio Context (lazily initialized upon user interaction)
+    let audioCtx = null;
+    let audioMasterGain = null;
+    let isSoundEnabled = true;
+
+    function initAudio() {
+      if (audioCtx) return;
+      try {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
+          audioCtx = new AudioContextClass();
+          audioMasterGain = audioCtx.createGain();
+          audioMasterGain.gain.setValueAtTime(0.14, audioCtx.currentTime);
+          audioMasterGain.connect(audioCtx.destination);
+        }
+      } catch (e) {
+        console.warn('Web Audio not supported', e);
+      }
+    }
+
+    // Pentatonic harmonic scale for soothing harp/celesta glissando
+    const PENTATONIC = [
+      196.00, 220.00, 246.94, 261.63, 293.66, 329.63, 392.00, 
+      440.00, 493.88, 523.25, 587.33, 659.25, 783.99, 880.00,
+      987.77, 1046.50, 1174.66, 1318.51
+    ];
+
+    let lastSoundTime = 0;
+    function playStringChime(freq) {
+      if (!isSoundEnabled) return;
+      initAudio();
+      if (!audioCtx) return;
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      const now = audioCtx.currentTime;
+      if (now - lastSoundTime < 0.038) return; // rate limit to prevent audio clipping
+      lastSoundTime = now;
+
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        // High-end glass bell / harp sine wave
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now);
+
+        gain.gain.setValueAtTime(0.001, now);
+        gain.gain.linearRampToValueAtTime(0.11, now + 0.012);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.82);
+
+        osc.connect(gain);
+        gain.connect(audioMasterGain);
+
+        osc.start(now);
+        osc.stop(now + 0.84);
+      } catch (err) {}
+    }
+
+    // Toggle Sound Button
+    if (soundBtn) {
+      soundBtn.addEventListener('click', () => {
+        isSoundEnabled = !isSoundEnabled;
+        initAudio();
+        if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+
+        if (soundStatus) soundStatus.textContent = isSoundEnabled ? 'SOUND ON' : 'SOUND OFF';
+        if (soundIconOn) soundIconOn.style.display = isSoundEnabled ? 'inline-block' : 'none';
+        if (soundIconOff) soundIconOff.style.display = isSoundEnabled ? 'none' : 'inline-block';
+        if (soundHint) {
+          soundHint.style.opacity = isSoundEnabled ? '1' : '0.4';
+          const hintText = soundHint.querySelector('span:last-child');
+          if (hintText) {
+            hintText.textContent = isSoundEnabled ? 'SOUND ON \u{1F3B6} HOVER THE LINES.' : 'SOUND MUTED.';
+          }
+        }
+      });
+    }
+
+    // Menu button trigger to open the luxury floating menu
+    if (menuBtn) {
+      menuBtn.addEventListener('click', () => {
+        const mainMenuToggle = document.getElementById('menuToggleBtn');
+        if (mainMenuToggle) mainMenuToggle.click();
+      });
+    }
+
+    // String segments data structure
+    let stringLines = [];
+    const NUM_ROWS = 42;
+
+    function buildStringSegments() {
+      width = stage.clientWidth || window.innerWidth;
+      height = stage.clientHeight || 380;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale(dpr, dpr);
+
+      // Off-screen canvas to render text mask for 'ARAFAT'
+      const offCanvas = document.createElement('canvas');
+      offCanvas.width = width;
+      offCanvas.height = height;
+      const offCtx = offCanvas.getContext('2d', { willReadFrequently: true });
+
+      // Draw the 6 letters evenly spaced across the canvas width
+      const letters = ['A', 'R', 'A', 'F', 'A', 'T'];
+      const marginSide = Math.max(30, width * 0.035);
+      const usableWidth = width - marginSide * 2;
+      const colWidth = usableWidth / letters.length;
+      const fontSize = Math.min(height * 0.88, colWidth * 1.25);
+
+      offCtx.fillStyle = '#ffffff';
+      offCtx.font = `900 ${fontSize}px 'Montserrat', sans-serif`;
+      offCtx.textAlign = 'center';
+      offCtx.textBaseline = 'middle';
+
+      const textY = height * 0.52;
+      for (let k = 0; k < letters.length; k++) {
+        const letterX = marginSide + (k + 0.5) * colWidth;
+        offCtx.fillText(letters[k], letterX, textY);
+      }
+
+      const imgData = offCtx.getImageData(0, 0, width, height).data;
+
+      stringLines = [];
+
+      // Scan NUM_ROWS horizontal lines across the canvas
+      const startY = height * 0.08;
+      const endY = height * 0.94;
+      const stepY = (endY - startY) / (NUM_ROWS - 1);
+
+      for (let r = 0; r < NUM_ROWS; r++) {
+        const y = Math.round(startY + r * stepY);
+        const rowFreq = PENTATONIC[r % PENTATONIC.length];
+
+        // Scan row pixels for white text presence (alpha > 110)
+        let inSegment = false;
+        let segStart = 0;
+
+        for (let x = 0; x < width; x++) {
+          const idx = (y * width + x) * 4;
+          const alpha = imgData[idx + 3];
+          const isLetter = alpha > 110;
+
+          if (isLetter && !inSegment) {
+            inSegment = true;
+            segStart = x;
+          } else if (!isLetter && inSegment) {
+            inSegment = false;
+            if (x - segStart > 6) {
+              stringLines.push({
+                x1: segStart,
+                x2: x,
+                baseY: y,
+                amp: 0,
+                vel: 0,
+                k: 0.088,
+                damping: 0.065,
+                freq: rowFreq,
+                rowIndex: r
+              });
+            }
+          }
+        }
+        if (inSegment && width - segStart > 6) {
+          stringLines.push({
+            x1: segStart,
+            x2: width,
+            baseY: y,
+            amp: 0,
+            vel: 0,
+            k: 0.088,
+            damping: 0.065,
+            freq: rowFreq,
+            rowIndex: r
+          });
+        }
+      }
+    }
+
+    // Mouse / Touch Plucking Physics
+    function handlePointerMove(clientX, clientY) {
+      const rect = canvas.getBoundingClientRect();
+      const mx = clientX - rect.left;
+      const my = clientY - rect.top;
+
+      if (mx < 0 || mx > width || my < 0 || my > height) return;
+
+      // Check string plucks
+      for (let i = 0; i < stringLines.length; i++) {
+        const s = stringLines[i];
+        if (mx >= s.x1 - 15 && mx <= s.x2 + 15) {
+          const dy = my - s.baseY;
+          // If cursor is within plucking proximity of the string
+          if (Math.abs(dy) < 18) {
+            const impulse = (dy < 0 ? -1 : 1) * Math.min(24, Math.abs(dy) * 2.2 + 9);
+            s.vel += impulse * 0.45;
+            playStringChime(s.freq);
+          }
+        }
+      }
+    }
+
+    canvas.addEventListener('mousemove', (e) => {
+      handlePointerMove(e.clientX, e.clientY);
+    });
+
+    canvas.addEventListener('touchmove', (e) => {
+      if (e.touches && e.touches[0]) {
+        handlePointerMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: true });
+
+    canvas.addEventListener('mouseenter', () => {
+      initAudio();
+    });
+
+    // Animation Loop (60 FPS Physical Simulation)
+    let animId = null;
+    function renderStrings() {
+      ctx.clearRect(0, 0, width, height);
+
+      for (let i = 0; i < stringLines.length; i++) {
+        const s = stringLines[i];
+
+        // Hooke's Law + viscous damping
+        const force = -s.k * s.amp - s.damping * s.vel;
+        s.vel += force;
+        s.amp += s.vel;
+
+        ctx.beginPath();
+        if (Math.abs(s.amp) > 0.05) {
+          // Vibrating physical wave (quadratic curve fundamental mode)
+          const midX = (s.x1 + s.x2) / 2;
+          const midY = s.baseY + s.amp;
+          ctx.moveTo(s.x1, s.baseY);
+          ctx.quadraticCurveTo(midX, midY, s.x2, s.baseY);
+          ctx.strokeStyle = `rgba(255, 255, 255, ${Math.min(1, 0.72 + Math.abs(s.amp) * 0.04)})`;
+          ctx.lineWidth = 1.35;
+        } else {
+          // Resting straight horizontal line segment
+          ctx.moveTo(s.x1, s.baseY);
+          ctx.lineTo(s.x2, s.baseY);
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.70)';
+          ctx.lineWidth = 1.1;
+        }
+        ctx.stroke();
+      }
+
+      animId = requestAnimationFrame(renderStrings);
+    }
+
+    // Initialize
+    buildStringSegments();
+    renderStrings();
+
+    // Window resize handler
+    let resizeTimer = null;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        buildStringSegments();
+      }, 100);
+    });
+  }
+
   // Initialize Scramblers
   const line1Scramble = new TextScramble(elLine1);
   const line2Scramble = new TextScramble(elLine2);
@@ -183,43 +475,107 @@
   let scrollVelocity = 0;
   let bloodEngine = null;
 
-  // Sequential Continuous Scroll Progression Engine
-  // 1. Enter Hero section -> Hero is pinned/sticky.
-  // 2. Scroll -> Hero animation progresses normally (frames 0-191 & text stages 0 -> 1 -> 2).
-  // 3. Keep Hero pinned until 100% of the animation is complete.
-  // 4. Only after the animation finishes -> release Hero.
-  // 5. Continue directly into the Blood Fill section (zero gap).
-  // 6. Blood then fills from the top based on scroll position.
-  function updateScroll() {
-    const doc = document.documentElement;
-    const body = document.body;
-    const scrollTop = window.pageYOffset || doc.scrollTop || body.scrollTop || 0;
-    const winHeight = window.innerHeight;
+  // Cached layout metrics to completely eliminate layout thrashing during scroll
+  const cachedMetrics = {
+    winHeight: window.innerHeight || 800,
+    bloodTop: 0,
+    bloodHeight: 0,
+    bloodMaxScroll: 1,
+    aboutTop: 0,
+    projectsTop: 0,
+    projectsHeight: 0
+  };
 
-    // Track smoothed scroll velocity for fluid sloshing & inertia
-    const deltaY = scrollTop - lastScrollY;
-    lastScrollY = scrollTop;
-    scrollVelocity = scrollVelocity * 0.8 + deltaY * 0.2;
+  function updateCachedMetrics() {
+    cachedMetrics.winHeight = window.innerHeight || 800;
+    if (elBloodSection) {
+      cachedMetrics.bloodTop = elBloodSection.offsetTop;
+      cachedMetrics.bloodHeight = elBloodSection.offsetHeight;
+      cachedMetrics.bloodMaxScroll = Math.max(cachedMetrics.bloodHeight - cachedMetrics.winHeight, 1);
+    }
+    const elAbout = document.getElementById('about');
+    if (elAbout) {
+      cachedMetrics.aboutTop = elAbout.offsetTop;
+    }
+    const elProjects = document.getElementById('projects');
+    if (elProjects) {
+      cachedMetrics.projectsTop = elProjects.offsetTop;
+      cachedMetrics.projectsHeight = elProjects.offsetHeight;
+    }
+  }
+
+  // Smart Section Visibility Observers (Sleep off-screen WebGL & SVG fluid engines)
+  let isHeroVisible = true;
+  let isBloodVisible = false;
+  let isProjectsVisible = false;
+  let isAboutVisible = false;
+
+  function initSectionObservers() {
+    if (!('IntersectionObserver' in window)) {
+      isHeroVisible = true;
+      isBloodVisible = true;
+      isProjectsVisible = true;
+      isAboutVisible = true;
+      return;
+    }
+
+    const obsOptions = { root: null, rootMargin: '120px 0px', threshold: 0 };
+
+    if (elHeroSection) {
+      new IntersectionObserver((entries) => {
+        isHeroVisible = entries[0].isIntersecting;
+      }, obsOptions).observe(elHeroSection);
+    }
+
+    if (elBloodSection) {
+      new IntersectionObserver((entries) => {
+        isBloodVisible = entries[0].isIntersecting;
+      }, obsOptions).observe(elBloodSection);
+    }
+
+    const elProjects = document.getElementById('projects');
+    if (elProjects) {
+      new IntersectionObserver((entries) => {
+        isProjectsVisible = entries[0].isIntersecting;
+        if (isProjectsVisible && projectsEngine) {
+          projectsEngine.triggerEntrance();
+        }
+      }, obsOptions).observe(elProjects);
+    }
+
+    const elAbout = document.getElementById('about');
+    if (elAbout) {
+      new IntersectionObserver((entries) => {
+        isAboutVisible = entries[0].isIntersecting;
+      }, obsOptions).observe(elAbout);
+    }
+  }
+
+  // Fast Zero-Reflow Scroll Progression Handler
+  function updateScroll(customScrollY) {
+    const scrollTop = (typeof customScrollY === 'number')
+      ? customScrollY
+      : (window.pageYOffset || document.documentElement.scrollTop || 0);
+    const winHeight = cachedMetrics.winHeight;
 
     if (!elHeroSection || !elBloodSection) return;
 
-    const bloodTop = elBloodSection.offsetTop;
-    const bloodHeight = elBloodSection.offsetHeight;
-    const bloodMaxScroll = Math.max(bloodHeight - winHeight, 1);
+    const bloodTop = cachedMetrics.bloodTop;
+    const bloodHeight = cachedMetrics.bloodHeight;
+    const bloodMaxScroll = cachedMetrics.bloodMaxScroll;
 
-    // Hero section has no scroll trigger / scroll lock
+    // Hero section progression
     targetProgress = Math.min(1, Math.max(0, scrollTop / Math.max(winHeight, 1)));
 
-    // BLOOD FILL SECTION PROGRESSION
+    // Blood fill section progression
     if (scrollTop < bloodTop) {
       targetBloodProgress = 0;
     } else {
-      // Blood section is docked & pinned at top: fill from 0 to 1 based on scroll
       const bloodScroll = Math.min(bloodMaxScroll, scrollTop - bloodTop);
       targetBloodProgress = Math.min(1, Math.max(0, bloodScroll / bloodMaxScroll));
     }
 
-    // Dynamic Site Header Theme Switch (Light theme when over #f3f5f0 background)
+    // Dynamic Site Header Theme Switch (transitions seamlessly when About Me reaches header)
     if (elSiteHeader) {
       if (scrollTop > 25) {
         elSiteHeader.classList.add('scrolled');
@@ -227,34 +583,32 @@
         elSiteHeader.classList.remove('scrolled');
       }
 
-      // Brand logo only shown in hero section; hide when scrolled past hero
       if (scrollTop > winHeight * 0.4) {
         elSiteHeader.classList.add('logo-hidden');
       } else {
         elSiteHeader.classList.remove('logo-hidden');
       }
 
-      if (scrollTop >= bloodTop - 70 && scrollTop <= (bloodTop + bloodHeight - 70)) {
+      const aboutTop = cachedMetrics.aboutTop || (bloodTop + bloodHeight);
+      if (scrollTop >= bloodTop - 70 && scrollTop < aboutTop - 70) {
         elSiteHeader.classList.add('light-theme');
       } else {
         elSiteHeader.classList.remove('light-theme');
       }
     }
-
-    // 3. PROJECTS SHOWCASE SECTION TRIGGER
-    const elProjects = document.getElementById('projects');
-    if (elProjects && projectsEngine) {
-      const rect = elProjects.getBoundingClientRect();
-      if (rect.top <= winHeight * 0.85 && rect.bottom >= 0) {
-        projectsEngine.triggerEntrance();
-      } else if (rect.top > winHeight + 150) {
-        projectsEngine.resetEntrance();
-      }
-    }
   }
 
-  // Animation Loop (LERP scrubbing + fluid simulation)
+  // Unified High-Performance Animation Loop
+  let lastRenderedProgress = -1;
+  let lastScrollTop = 0;
+
   function tick(now) {
+    // Sample scroll once per VSync frame for silky-smooth, jitter-free fluid velocity
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop || 0;
+    const deltaY = scrollTop - lastScrollTop;
+    lastScrollTop = scrollTop;
+    scrollVelocity = scrollVelocity * 0.82 + deltaY * 0.18;
+
     const diff = targetProgress - currentProgress;
     if (Math.abs(diff) > 0.0001) {
       currentProgress += diff * LERP_FACTOR;
@@ -262,18 +616,19 @@
       currentProgress = targetProgress;
     }
 
-    // Decay scroll velocity smoothly
-    scrollVelocity *= 0.88;
+    // 1. Hero Portrait: Only update style when visible and progress changed
+    if (isHeroVisible && Math.abs(currentProgress - lastRenderedProgress) > 0.0002) {
+      renderCurrent();
+      lastRenderedProgress = currentProgress;
+    }
 
-    renderCurrent();
-
-    // Render continuous fluid blood waves
-    if (bloodEngine) {
+    // 2. Liquid Blood Engine: Render fluid waves ONLY when blood section is visible in viewport
+    if (isBloodVisible && bloodEngine) {
       bloodEngine.renderBlood((now || performance.now()) * 0.001);
     }
 
-    // Render Projects 3D Upward Emergence & Carousel Engine
-    if (projectsEngine) {
+    // 3. Projects 3D WebGL Engine: Render ONLY when projects section is visible in viewport
+    if (isProjectsVisible && projectsEngine) {
       projectsEngine.render(now);
     }
 
@@ -283,10 +638,19 @@
   // =========================================
   // LUXURY PRELOADER CONTROLLER
   // =========================================
-  let preloaderFinished = false;
+  let preloaderFinished = !elPreloader;
   let displayedCount = 0;
   const startTime = performance.now();
   const MIN_PRELOAD_DURATION = 1400; // ms to ensure user enjoys the counting aesthetic
+
+  if (!elPreloader) {
+    setTimeout(() => {
+      if (typeof line1Scramble !== 'undefined' && line1Scramble) line1Scramble.setText(STAGES[0].line1, 24);
+      if (typeof line2Scramble !== 'undefined' && line2Scramble) line2Scramble.setText(STAGES[0].line2, 28);
+      if (typeof line3Scramble !== 'undefined' && line3Scramble) line3Scramble.setText(STAGES[0].line3, 26);
+      if (typeof descScramble !== 'undefined' && descScramble) descScramble.setText(STAGES[0].desc, 36);
+    }, 100);
+  }
 
   // Preload Hero Portrait
   let heroImageLoaded = false;
@@ -299,7 +663,7 @@
   }
 
   function tickPreloader(now) {
-    if (preloaderFinished) return;
+    if (preloaderFinished || !elPreloader) return;
 
     const elapsed = now - startTime;
     const timeProgress = Math.min(100, Math.floor((elapsed / MIN_PRELOAD_DURATION) * 100));
@@ -450,8 +814,27 @@
       });
     }
 
+    // Cached SVG bounds (recomputed on resize to eliminate per-frame layout thrashing)
+    let cachedSvgRect = null;
+    function refreshSvgRect() {
+      if (svgLogo) {
+        cachedSvgRect = svgLogo.getBoundingClientRect();
+      }
+    }
+    window.addEventListener('resize', refreshSvgRect, { passive: true });
+    refreshSvgRect();
+
+    let lastLeftX = 0, lastLeftY = 0;
+    let lastRightX = 0, lastRightY = 0;
+
     // Animation loop for fluid eye tracking
     function updateEyes(now) {
+      // Pause completely if logo is hidden when scrolled past hero
+      if (elSiteHeader && elSiteHeader.classList.contains('logo-hidden')) {
+        requestAnimationFrame(updateEyes);
+        return;
+      }
+
       const isIdle = (now - lastMouseMoveTime > 2600);
 
       // In idle mode, smoothly wander gaze
@@ -465,9 +848,13 @@
         }
       }
 
-      // Compute SVG element bounds & scale factors
-      const svgRect = svgLogo.getBoundingClientRect();
-      if (svgRect.width > 0) {
+      // Compute SVG element bounds & scale factors using cached geometry
+      if (!cachedSvgRect || cachedSvgRect.width === 0) {
+        refreshSvgRect();
+      }
+
+      const svgRect = cachedSvgRect;
+      if (svgRect && svgRect.width > 0) {
         const scaleX = svgRect.width / 58;
         const scaleY = svgRect.height / 38;
 
@@ -515,12 +902,20 @@
         curRightX += (targetRX - curRightX) * lerp;
         curRightY += (targetRY - curRightY) * lerp;
 
-        leftPupil.setAttribute('transform', `translate(${curLeftX.toFixed(2)}, ${curLeftY.toFixed(2)})`);
-        rightPupil.setAttribute('transform', `translate(${curRightX.toFixed(2)}, ${curRightY.toFixed(2)})`);
+        if (Math.abs(curLeftX - lastLeftX) > 0.04 || Math.abs(curLeftY - lastLeftY) > 0.04) {
+          leftPupil.setAttribute('transform', `translate(${curLeftX.toFixed(2)}, ${curLeftY.toFixed(2)})`);
+          lastLeftX = curLeftX;
+          lastLeftY = curLeftY;
+        }
+        if (Math.abs(curRightX - lastRightX) > 0.04 || Math.abs(curRightY - lastRightY) > 0.04) {
+          rightPupil.setAttribute('transform', `translate(${curRightX.toFixed(2)}, ${curRightY.toFixed(2)})`);
+          lastRightX = curRightX;
+          lastRightY = curRightY;
+        }
       }
 
-      // Preloader mini-avatar pupils update if active
-      if (miniPupilLeft && miniPupilRight) {
+      // Preloader mini-avatar pupils update (active ONLY while preloader is visible)
+      if (!preloaderFinished && miniPupilLeft && miniPupilRight) {
         const miniRect = miniPupilLeft.getBoundingClientRect();
         if (miniRect.width > 0 && miniRect.top < window.innerHeight) {
           const mDx = mouseX - (miniRect.left + miniRect.width / 2);
@@ -545,51 +940,189 @@
     requestAnimationFrame(updateEyes);
   }
 
+  // =========================================================================
+  // CENTRALIZED NAVIGATION CONTENT CONFIGURATION (EDITABLE PLACEHOLDERS)
+  // Replace placeholders with your actual personal/business details anytime.
+  // =========================================================================
+  const NAV_CONFIG = {
+    logo: {
+      name: 'AraFaT',
+      dot: '.',
+      tag: 'Shopify • Front-end',
+      url: '#'
+    },
+    cta: {
+      label: "Let's talk!",
+      url: '#contact'
+    },
+    links: [
+      { id: 'home', label: 'Home', url: '#', active: true },
+      { id: 'about', label: 'About Us', url: '#about' },
+      { id: 'work', label: 'Work', url: '#projects' },
+      {
+        id: 'services',
+        label: 'Services',
+        url: '#services',
+        submenu: [
+          { label: 'Shopify Development', url: '#services' },
+          { label: 'Shopify Theme Development', url: '#services' },
+          { label: 'Shopify Liquid', url: '#services' },
+          { label: 'E-commerce Development', url: '#services' },
+          { label: 'Frontend Development', url: '#services' },
+          { label: 'UI/UX Development', url: '#services' },
+          { label: 'Website Optimization', url: '#services' }
+        ]
+      },
+      { id: 'blog', label: 'Blog', url: '#blog' },
+      { id: 'contact', label: 'Contact', url: '#contact' }
+    ],
+    contact: {
+      email: 'arafathasanprince501@gmail.com', // [MY_EMAIL]
+      location: 'Sheridan, WY, USA', // [MY_LOCATION]
+      emailHref: 'mailto:arafathasanprince501@gmail.com'
+    },
+    socials: [
+      { platform: 'instagram', label: 'Instagram', url: 'https://instagram.com' },
+      { platform: 'linkedin', label: 'LinkedIn', url: 'https://linkedin.com' },
+      { platform: 'dribbble', label: 'Dribbble', url: 'https://dribbble.com' },
+      { platform: 'behance', label: 'Behance', url: 'https://behance.net' },
+      { platform: 'whatsapp', label: 'WhatsApp', url: 'https://whatsapp.com' }
+    ]
+  };
+
   // =========================================
-  // FLOATING MENU & NAVIGATION OVERLAY CONTROLLER
+  // LUXURY FULLSCREEN NAVIGATION CONTROLLER
   // =========================================
   function initFloatingMenu() {
     const menuBtn = document.getElementById('menuToggleBtn');
     const navOverlay = document.getElementById('navOverlay');
+    const navCloseBtn = document.getElementById('navCloseBtn');
     const navBackdrop = document.getElementById('navBackdrop');
-    const navLinks = document.querySelectorAll('.nav-panel-link');
+    const navCtaBtn = document.getElementById('navCtaBtn');
+    const navOverlayLogo = document.getElementById('navOverlayLogo');
+    const servicesItem = document.getElementById('navServicesItem');
+    const servicesToggle = document.getElementById('navServicesToggle');
+    const servicesSubmenu = document.getElementById('navServicesSubmenu');
+    const thunderWaveContainer = document.getElementById('thunderWaveContainer');
+    const navLinks = document.querySelectorAll('.nav-link, .nav-sub-link');
 
-    if (!menuBtn || !navOverlay) return;
+    if (!navOverlay) return;
+    document.documentElement.style.removeProperty('--scrollbar-comp');
 
     let isOpen = false;
+    let savedScrollY = 0;
+    let closeTimer = null;
 
+    // High-performance circular reveal coordinate synchronization
     function updateCircleOrigin() {
+      if (!menuBtn) return;
       const rect = menuBtn.getBoundingClientRect();
-      const x = rect.left + rect.width / 2;
-      const y = rect.top + rect.height / 2;
-      navOverlay.style.setProperty('--circle-x', `${x.toFixed(1)}px`);
-      navOverlay.style.setProperty('--circle-y', `${y.toFixed(1)}px`);
-    }
-
-    function openMenu() {
-      updateCircleOrigin();
-      isOpen = true;
-      menuBtn.classList.add('is-active');
-      menuBtn.setAttribute('aria-expanded', 'true');
-      navOverlay.classList.add('is-open');
-      navOverlay.setAttribute('aria-hidden', 'false');
-      document.body.classList.add('menu-open');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeMenu() {
-      updateCircleOrigin();
-      isOpen = false;
-      menuBtn.classList.remove('is-active');
-      menuBtn.setAttribute('aria-expanded', 'false');
-      navOverlay.classList.remove('is-open');
-      navOverlay.setAttribute('aria-hidden', 'true');
-      document.body.classList.remove('menu-open');
-      document.body.style.overflow = '';
+      const cx = Math.round(rect.left + rect.width / 2);
+      const cy = Math.round(rect.top + rect.height / 2);
+      document.documentElement.style.setProperty('--circle-x', `${cx}px`);
+      document.documentElement.style.setProperty('--circle-y', `${cy}px`);
+      if (navOverlay) {
+        navOverlay.style.setProperty('--circle-x', `${cx}px`);
+        navOverlay.style.setProperty('--circle-y', `${cy}px`);
+      }
+      if (thunderWaveContainer) {
+        thunderWaveContainer.style.setProperty('--circle-x', `${cx}px`);
+        thunderWaveContainer.style.setProperty('--circle-y', `${cy}px`);
+      }
     }
 
     updateCircleOrigin();
     window.addEventListener('resize', updateCircleOrigin, { passive: true });
+
+    function openMenu() {
+      if (isOpen) return;
+      clearTimeout(closeTimer);
+      savedScrollY = window.pageYOffset || document.documentElement.scrollTop || window.scrollY || 0;
+      isOpen = true;
+
+      updateCircleOrigin();
+
+      if (menuBtn) {
+        menuBtn.classList.add('is-active');
+        menuBtn.setAttribute('aria-expanded', 'true');
+        menuBtn.setAttribute('aria-label', 'Cancel and Close Navigation Menu');
+        menuBtn.setAttribute('title', 'Close Menu (Esc)');
+      }
+
+      // Lock body scroll and pause Lenis
+      document.body.classList.add('menu-open');
+      document.body.style.overflow = 'hidden';
+      if (window.__lenis && typeof window.__lenis.stop === 'function') {
+        window.__lenis.stop();
+      }
+
+      // Clear any closing state
+      navOverlay.classList.remove('is-closing');
+      if (thunderWaveContainer) {
+        thunderWaveContainer.classList.remove('is-closing');
+        thunderWaveContainer.classList.remove('is-active');
+      }
+
+      // Launch silky-smooth GPU-accelerated thunder wave & circular reveal
+      requestAnimationFrame(() => {
+        if (thunderWaveContainer) {
+          thunderWaveContainer.classList.add('is-active');
+        }
+        navOverlay.classList.add('is-open');
+        navOverlay.setAttribute('aria-hidden', 'false');
+      });
+    }
+
+    function closeMenu() {
+      if (!isOpen) return;
+      isOpen = false;
+
+      if (menuBtn) {
+        menuBtn.classList.remove('is-active');
+        menuBtn.setAttribute('aria-expanded', 'false');
+        menuBtn.setAttribute('aria-label', 'Open Navigation Menu');
+        menuBtn.setAttribute('title', 'Open Menu');
+      }
+
+      updateCircleOrigin();
+
+      // Activate reverse implosion on both the wave container and overlay
+      if (thunderWaveContainer) {
+        thunderWaveContainer.classList.remove('is-active');
+        thunderWaveContainer.classList.add('is-closing');
+      }
+      navOverlay.classList.add('is-closing');
+      navOverlay.setAttribute('aria-hidden', 'true');
+
+      // Cleanup after reverse implosion completes (500ms)
+      clearTimeout(closeTimer);
+      closeTimer = setTimeout(() => {
+        if (!isOpen) {
+          navOverlay.classList.remove('is-open', 'is-closing');
+          if (thunderWaveContainer) {
+            thunderWaveContainer.classList.remove('is-active', 'is-closing');
+          }
+          document.body.classList.remove('menu-open');
+          document.body.style.overflow = '';
+
+          if (window.__lenis && typeof window.__lenis.start === 'function') {
+            window.__lenis.start();
+          }
+        }
+      }, 500);
+
+      // Restore exact previous scroll position immediately
+      if (window.__lenis && typeof window.__lenis.scrollTo === 'function') {
+        window.__lenis.scrollTo(savedScrollY, { immediate: true });
+      } else {
+        window.scrollTo({ top: savedScrollY, behavior: 'instant' });
+      }
+
+      // Restore focus to menu trigger button
+      if (menuBtn) {
+        menuBtn.focus();
+      }
+    }
 
     function toggleMenu() {
       if (isOpen) {
@@ -599,13 +1132,20 @@
       }
     }
 
-    menuBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      toggleMenu();
-    });
+    // Menu toggle button click (handles both opening and closing)
+    if (menuBtn) {
+      menuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleMenu();
+      });
+    }
 
+    // Backdrop click closes menu
     if (navBackdrop) {
-      navBackdrop.addEventListener('click', closeMenu);
+      navBackdrop.addEventListener('click', (e) => {
+        e.preventDefault();
+        closeMenu();
+      });
     }
 
     // Close on Escape key
@@ -615,24 +1155,100 @@
       }
     });
 
-    // Close on navigation link click & smooth scroll
+    // Logo in top bar closes menu and smoothly scrolls to top
+    if (navOverlayLogo) {
+      navOverlayLogo.addEventListener('click', (e) => {
+        e.preventDefault();
+        closeMenu();
+        if (window.__lenis && typeof window.__lenis.scrollTo === 'function') {
+          window.__lenis.scrollTo(0, { duration: 1.1 });
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      });
+    }
+
+    // "Let's talk!" action in top bar
+    if (navCtaBtn) {
+      navCtaBtn.addEventListener('click', (e) => {
+        const href = navCtaBtn.getAttribute('href');
+        closeMenu();
+        if (href && href.startsWith('#')) {
+          e.preventDefault();
+          const target = document.querySelector(href);
+          if (target) {
+            const targetY = target.getBoundingClientRect().top + window.pageYOffset;
+            if (window.__lenis && typeof window.__lenis.scrollTo === 'function') {
+              window.__lenis.scrollTo(targetY, { duration: 1.2 });
+            } else {
+              window.scrollTo({ top: targetY, behavior: 'smooth' });
+            }
+          }
+        }
+      });
+    }
+
+    // Services Submenu Toggle (Chevron button or Services link click)
+    function toggleServicesSubmenu(e) {
+      if (e) e.preventDefault();
+      if (!servicesItem) return;
+      const isExpanded = servicesItem.classList.toggle('is-expanded');
+      if (servicesToggle) {
+        servicesToggle.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+      }
+      if (servicesSubmenu) {
+        servicesSubmenu.setAttribute('aria-hidden', isExpanded ? 'false' : 'true');
+      }
+    }
+
+    if (servicesToggle) {
+      servicesToggle.addEventListener('click', toggleServicesSubmenu);
+    }
+
+    // Navigation Links click: smooth scroll to target & close menu
     navLinks.forEach((link) => {
       link.addEventListener('click', (e) => {
         const href = link.getAttribute('href');
-        if (href && href.startsWith('#')) {
+        if (!href) return;
+
+        // If clicking parent "Services" link, toggle its submenu instead of closing
+        if (link.closest('#navServicesItem') && href === '#services' && !link.classList.contains('nav-sub-link')) {
+          e.preventDefault();
+          toggleServicesSubmenu(e);
+          return;
+        }
+
+        if (href.startsWith('#')) {
           e.preventDefault();
           closeMenu();
+
+          if (href === '#' || href === '#home') {
+            if (window.__lenis && typeof window.__lenis.scrollTo === 'function') {
+              window.__lenis.scrollTo(0, { duration: 1.1 });
+            } else {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            return;
+          }
+
           const targetId = (href === '#work' || href === '#projects') ? 'projects' : href.replace('#', '');
           const target = document.getElementById(targetId) || document.querySelector(href);
           if (target) {
             const targetY = target.getBoundingClientRect().top + window.pageYOffset;
-            window.scrollTo({ top: targetY, behavior: 'smooth' });
+            if (window.__lenis && typeof window.__lenis.scrollTo === 'function') {
+              window.__lenis.scrollTo(targetY, { duration: 1.2 });
+            } else {
+              window.scrollTo({ top: targetY, behavior: 'smooth' });
+            }
           }
         } else {
           closeMenu();
         }
       });
     });
+
+    // Expose config for programmatic access
+    window.NAV_CONFIG = NAV_CONFIG;
   }
 
   // =========================================
@@ -652,43 +1268,69 @@
 
     if (!bloodSvg || !waveBack || !waveMid || !waveFront || !maskLettersPath) return null;
 
-    // 33 individual characters in exact sequential reading order across 3 lines:
-    // Line 1: "CODE WITH PURPOSE." (16 letters, 2 spaces)
-    // Line 2: "DESIGN WITH" (10 letters, 1 space)
-    // Line 3: "INTENT." (7 letters)
-    const line1Chars = ['C', 'O', 'D', 'E', 'W', 'I', 'T', 'H', 'P', 'U', 'R', 'P', 'O', 'S', 'E', '.'];
-    const line2Chars = ['D', 'E', 'S', 'I', 'G', 'N', 'W', 'I', 'T', 'H'];
-    const line3Chars = ['I', 'N', 'T', 'E', 'N', 'T', '.'];
+    // 24 individual characters across 3 lines:
+    // Line 1: "WE DON'T" (7 characters: W, E, D, O, N, ', T)
+    // Line 2: "JUST BUILD" (9 characters: J, U, S, T, B, U, I, L, D)
+    // Line 3: "WE CREATE" (8 characters: W, E, C, R, E, A, T, E)
+    const line1Chars = ['W', 'E', 'D', 'O', 'N', "'", 'T'];
+    const line2Chars = ['J', 'U', 'S', 'T', 'B', 'U', 'I', 'L', 'D'];
+    const line3Chars = ['W', 'E', 'C', 'R', 'E', 'A', 'T', 'E'];
 
     const LETTERS = [
       ...line1Chars.map((char, i) => ({
         char,
         line: 1,
-        x: Math.round(230 + i * 76),
-        y: 155,
-        width: 72,
-        height: 110
+        x: Math.round(410 + i * 140),
+        y: 125,
+        width: 120,
+        height: 160
       })),
       ...line2Chars.map((char, i) => ({
         char,
         line: 2,
-        x: Math.round(480 + i * 84),
-        y: 385,
-        width: 76,
-        height: 115
+        x: Math.round(370 + i * 120),
+        y: 355,
+        width: 105,
+        height: 160
       })),
       ...line3Chars.map((char, i) => ({
         char,
         line: 3,
-        x: Math.round(610 + i * 86),
-        y: 615,
-        width: 80,
-        height: 120
+        x: Math.round(360 + i * 135),
+        y: 585,
+        width: 115,
+        height: 160
       }))
     ];
 
-    // Dynamic browser font bounds refinement
+    // Dynamic browser font bounds refinement & responsive viewBox setup
     function refreshLetterCoordinates() {
+      const isMobile = window.innerWidth <= 768;
+      const clipL1 = document.getElementById('clipTextLine1');
+      const clipL2 = document.getElementById('clipTextLine2');
+      const clipL3 = document.getElementById('clipTextLine3');
+      const bgL1 = document.getElementById('bgTextLine1');
+      const bgL2 = document.getElementById('bgTextLine2');
+      const bgL3 = document.getElementById('bgTextLine3');
+
+      if (isMobile) {
+        bloodSvg.setAttribute('viewBox', '0 0 540 440');
+        if (clipL1) { clipL1.setAttribute('x', '270'); clipL1.setAttribute('y', '135'); }
+        if (clipL2) { clipL2.setAttribute('x', '270'); clipL2.setAttribute('y', '235'); }
+        if (clipL3) { clipL3.setAttribute('x', '270'); clipL3.setAttribute('y', '335'); }
+        if (bgL1) { bgL1.setAttribute('x', '270'); bgL1.setAttribute('y', '135'); }
+        if (bgL2) { bgL2.setAttribute('x', '270'); bgL2.setAttribute('y', '235'); }
+        if (bgL3) { bgL3.setAttribute('x', '270'); bgL3.setAttribute('y', '335'); }
+      } else {
+        bloodSvg.setAttribute('viewBox', '0 0 1800 920');
+        if (clipL1) { clipL1.setAttribute('x', '900'); clipL1.setAttribute('y', '275'); }
+        if (clipL2) { clipL2.setAttribute('x', '900'); clipL2.setAttribute('y', '505'); }
+        if (clipL3) { clipL3.setAttribute('x', '900'); clipL3.setAttribute('y', '735'); }
+        if (bgL1) { bgL1.setAttribute('x', '900'); bgL1.setAttribute('y', '275'); }
+        if (bgL2) { bgL2.setAttribute('x', '900'); bgL2.setAttribute('y', '505'); }
+        if (bgL3) { bgL3.setAttribute('x', '900'); bgL3.setAttribute('y', '735'); }
+      }
+
       const lineIds = ['clipTextLine1', 'clipTextLine2', 'clipTextLine3'];
       let idx = 0;
       lineIds.forEach((id) => {
@@ -724,9 +1366,15 @@
     let tiltVelocity = 0;
     let sloshAmp = 0;
 
-    const N = LETTERS.length; // 33 letters
+    const N = LETTERS.length; // 24 letters
     const OVERLAP = 0.38; // Smooth liquid stream overlap between adjacent letters
     const totalSpan = (N - 1) + (1 + OVERLAP);
+
+    // Set static waveBack layer once on init
+    waveBack.setAttribute('d', 'M -100 -50 L 1950 -50 L 1950 990 L -100 990 Z');
+
+    let isBloodMaskEmpty = true;
+    let isFullySettled = false;
 
     function renderBlood(timeSeconds) {
       // Buttery-smooth viscous liquid response towards target scroll position
@@ -745,19 +1393,51 @@
       const t1 = timeSeconds * 2.0;
       const t2 = timeSeconds * 2.8;
 
-
-
-      // When empty at 0, render empty mask
+      // When empty at 0, clear mask once and return
       if (currentFill < 0.0005) {
-        maskLettersPath.setAttribute('d', '');
-        if (meniscusLine) meniscusLine.setAttribute('d', '');
+        if (!isBloodMaskEmpty) {
+          maskLettersPath.setAttribute('d', '');
+          if (meniscusLine) meniscusLine.setAttribute('d', '');
+          isBloodMaskEmpty = true;
+        }
+        isFullySettled = false;
         return;
       }
+      isBloodMaskEmpty = false;
 
-      // 1. Render multi-layer fluid background paths spanning the viewBox
+      // When completely filled and settled at 1.0, write static full rects once and sleep (0% CPU/GPU into About)
+      if (currentFill >= 0.999 && Math.abs(fillDiff) < 0.0005 && Math.abs(tilt) < 0.02 && sloshAmp < 0.02) {
+        if (!isFullySettled) {
+          const isMobile = window.innerWidth <= 768;
+          const fullMaskCommands = [];
+          for (let k = 0; k < N; k++) {
+            const letter = LETTERS[k];
+            const lx = letter.x - 3;
+            const rx = letter.x + letter.width + 3;
+            const lyTop = (letter.y && letter.height > 0)
+              ? (letter.y - 4)
+              : (letter.line === 1 ? (isMobile ? 85 : 120) : letter.line === 2 ? (isMobile ? 185 : 350) : (isMobile ? 285 : 580));
+            const lyBot = (letter.y && letter.height > 0)
+              ? (letter.y + letter.height + 4)
+              : (letter.line === 1 ? (isMobile ? 142 : 285) : letter.line === 2 ? (isMobile ? 242 : 515) : (isMobile ? 342 : 745));
+            fullMaskCommands.push(`M ${lx} ${lyTop} H ${rx} V ${lyBot} H ${lx} Z`);
+          }
+          maskLettersPath.setAttribute('d', fullMaskCommands.join(' '));
+          if (meniscusLine) {
+            meniscusLine.setAttribute('d', '');
+            meniscusLine.style.opacity = '0';
+          }
+          waveMid.setAttribute('d', 'M -100 -50 L 1950 -50 L 1950 990 L -100 990 Z');
+          waveFront.setAttribute('d', 'M -100 -50 L 1950 -50 L 1950 990 L -100 990 Z');
+          isFullySettled = true;
+        }
+        return;
+      }
+      isFullySettled = false;
+
+      // 1. Render dynamic fluid background paths spanning the viewBox
       const wb = Math.sin(t1) * 2.5;
       const wm = Math.cos(t2) * 2.0;
-      waveBack.setAttribute('d', 'M -100 -50 L 1950 -50 L 1950 990 L -100 990 Z');
       waveMid.setAttribute('d', `M -100 ${-50 + wb} L 1950 ${-50 - wb} L 1950 ${990 + wb} L -100 ${990 - wb} Z`);
       waveFront.setAttribute('d', `M -100 ${-50 + wm} L 1950 ${-50 - wm} L 1950 ${990 + wm} L -100 ${990 - wm} Z`);
 
@@ -777,20 +1457,18 @@
           continue;
         }
 
-        const lx = letter.x - 2;
-        const rx = letter.x + letter.width + 2;
+        const lx = letter.x - 3;
+        const rx = letter.x + letter.width + 3;
         const w = rx - lx;
 
-        // Exact optical cap-height to baseline bounds per line
-        let lyTop = 145;
-        let lyBot = 275;
-        if (letter.line === 2) {
-          lyTop = 380;
-          lyBot = 510;
-        } else if (letter.line === 3) {
-          lyTop = 615;
-          lyBot = 745;
-        }
+        // Exact dynamic optical bounds derived from character geometry
+        const isMobile = window.innerWidth <= 768;
+        const lyTop = (letter.y && letter.height > 0)
+          ? (letter.y - 4)
+          : (letter.line === 1 ? (isMobile ? 85 : 120) : letter.line === 2 ? (isMobile ? 185 : 350) : (isMobile ? 285 : 580));
+        const lyBot = (letter.y && letter.height > 0)
+          ? (letter.y + letter.height + 4)
+          : (letter.line === 1 ? (isMobile ? 142 : 285) : letter.line === 2 ? (isMobile ? 242 : 515) : (isMobile ? 342 : 745));
 
         if (p_k >= 0.999) {
           // 100% Filled letter: full solid rectangular reveal
@@ -892,9 +1570,30 @@
         let isHovered = false;
         let curRotX = 0, curRotY = 0;
         let targetRotX = 0, targetRotY = 0;
+        let animId = null;
+
+        function stepTilt() {
+          curRotX += (targetRotX - curRotX) * 0.14;
+          curRotY += (targetRotY - curRotY) * 0.14;
+          card.style.transform = `perspective(1000px) rotateX(${curRotX.toFixed(2)}deg) rotateY(${curRotY.toFixed(2)}deg)`;
+
+          if (isHovered || Math.abs(curRotX) > 0.04 || Math.abs(curRotY) > 0.04) {
+            animId = requestAnimationFrame(stepTilt);
+          } else {
+            card.style.transform = '';
+            animId = null;
+          }
+        }
+
+        function startTilt() {
+          if (!animId) {
+            animId = requestAnimationFrame(stepTilt);
+          }
+        }
 
         card.addEventListener('mouseenter', () => {
           isHovered = true;
+          startTilt();
         });
 
         card.addEventListener('mousemove', (e) => {
@@ -904,23 +1603,15 @@
           const normY = (e.clientY - rect.top) / rect.height;
           targetRotX = (normY - 0.5) * -6.0; // subtle max 3 deg
           targetRotY = (normX - 0.5) * 6.0;
+          startTilt();
         });
 
         card.addEventListener('mouseleave', () => {
           isHovered = false;
           targetRotX = 0;
           targetRotY = 0;
+          startTilt();
         });
-
-        function stepTilt() {
-          if (isHovered || Math.abs(curRotX) > 0.05 || Math.abs(curRotY) > 0.05) {
-            curRotX += (targetRotX - curRotX) * 0.14;
-            curRotY += (targetRotY - curRotY) * 0.14;
-            card.style.transform = `perspective(1000px) rotateX(${curRotX.toFixed(2)}deg) rotateY(${curRotY.toFixed(2)}deg)`;
-          }
-          requestAnimationFrame(stepTilt);
-        }
-        requestAnimationFrame(stepTilt);
       });
     }
   }
@@ -928,105 +1619,6 @@
   // =========================================
   // TARGET CURSOR (ReactBits Snapping Reticle)
   // =========================================
-  function initTargetCursor() {
-    const elCursor = document.getElementById('targetCursor');
-    const elCursorInner = document.getElementById('targetCursorInner');
-    const aboutSection = document.getElementById('about');
-    if (!elCursor || !elCursorInner || !aboutSection) return;
-
-    // Exit on touch-only mobile devices
-    if (window.matchMedia && !window.matchMedia('(hover: hover)').matches) return;
-
-    const RETICLE_SIZE = 26; // Idle reticle diameter (px)
-    const TARGET_PADDING = 5; // Offset surrounding target elements (px)
-    const LERP_FACTOR = 0.32; // Responsive 0.2s smoothing
-
-    let mouseX = -100, mouseY = -100;
-    let curX = -100, curY = -100;
-    let curW = RETICLE_SIZE, curH = RETICLE_SIZE;
-    let targetX = -100, targetY = -100;
-    let targetW = RETICLE_SIZE, targetH = RETICLE_SIZE;
-
-    let isInsideActiveZone = false;
-    let currentTargetEl = null;
-
-    function handleMouseMove(e) {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-
-      const aboutRect = aboutSection.getBoundingClientRect();
-      const inside = (
-        mouseX >= aboutRect.left &&
-        mouseX <= aboutRect.right &&
-        mouseY >= aboutRect.top &&
-        mouseY <= aboutRect.bottom
-      );
-
-      if (inside !== isInsideActiveZone) {
-        isInsideActiveZone = inside;
-        if (isInsideActiveZone) {
-          elCursor.classList.add('active');
-          curX = mouseX - RETICLE_SIZE / 2;
-          curY = mouseY - RETICLE_SIZE / 2;
-        } else {
-          elCursor.classList.remove('active');
-          if (currentTargetEl) {
-            currentTargetEl = null;
-            elCursor.classList.remove('is-targeted');
-          }
-        }
-      }
-
-      if (!isInsideActiveZone) return;
-
-      // Identify hovered target element within skills area
-      const target = e.target.closest('.skill-chip, .tech-pill');
-      if (target) {
-        if (currentTargetEl !== target) {
-          currentTargetEl = target;
-          elCursor.classList.add('is-targeted');
-        }
-      } else {
-        if (currentTargetEl) {
-          currentTargetEl = null;
-          elCursor.classList.remove('is-targeted');
-        }
-      }
-    }
-
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
-
-    function renderTargetCursor() {
-      if (isInsideActiveZone) {
-        if (currentTargetEl) {
-          const rect = currentTargetEl.getBoundingClientRect();
-          targetW = rect.width + TARGET_PADDING * 2;
-          targetH = rect.height + TARGET_PADDING * 2;
-          targetX = rect.left - TARGET_PADDING;
-          targetY = rect.top - TARGET_PADDING;
-        } else {
-          targetW = RETICLE_SIZE;
-          targetH = RETICLE_SIZE;
-          targetX = mouseX - RETICLE_SIZE / 2;
-          targetY = mouseY - RETICLE_SIZE / 2;
-        }
-
-        curX += (targetX - curX) * LERP_FACTOR;
-        curY += (targetY - curY) * LERP_FACTOR;
-        curW += (targetW - curW) * LERP_FACTOR;
-        curH += (targetH - curH) * LERP_FACTOR;
-
-        elCursor.style.transform = `translate3d(${curX.toFixed(2)}px, ${curY.toFixed(2)}px, 0)`;
-        elCursor.style.width = `${curW.toFixed(2)}px`;
-        elCursor.style.height = `${curH.toFixed(2)}px`;
-      }
-
-      requestAnimationFrame(renderTargetCursor);
-    }
-
-    requestAnimationFrame(renderTargetCursor);
-  }
-
   /* ------------------------------------------------------------------ */
   /* COLLECTION/014PRO: 3D THREE.JS WEBGL CURVED IMAGE RIBBON ENGINE   */
   /* ------------------------------------------------------------------ */
@@ -1065,13 +1657,17 @@
           smoothWheel: true,
           smoothTouch: false
         });
+        window.__lenis = lenis;
 
         if (typeof ScrollTrigger !== 'undefined' && typeof gsap !== 'undefined') {
-          lenis.on('scroll', ScrollTrigger.update);
+          lenis.on('scroll', (e) => {
+            ScrollTrigger.update();
+            updateScroll(e.scroll);
+          });
           gsap.ticker.add((time) => {
             lenis.raf(time * 1000);
           });
-          gsap.ticker.lagSmoothing(0);
+          gsap.ticker.lagSmoothing(500, 33);
         } else {
           function lenisTick(time) {
             lenis.raf(time);
@@ -1084,112 +1680,155 @@
       }
     }
 
-    // Projects Data Matrix (9 Featured Projects)
+    // Projects Data Matrix (10 Featured Real Projects from "Projects for portfolio")
     const PROJECTS_DATA = [
       {
         id: 1,
-        title: "LUMINA HYPERCAR",
-        category: "AUTOMOTIVE CONCEPT",
-        tag: "Concept HMI",
-        desc: "Next-generation generative telemetry & spatial HMI interface for autonomous electric hypercars.",
-        img: "assets/projects/project_1.jpg",
+        title: "AURELIUM",
+        category: "SHOPIFY 2.0 / LUXURY APPAREL",
+        tag: "Custom Liquid",
+        desc: "Custom embroidery & luxury streetwear flagship engineered with interactive customization & high-converting product pages.",
+        img: "Projects for portfolio/aurelium/aurelium-header.png",
+        desktopImg: "Projects for portfolio/aurelium/aurelium-desktop.png",
+        mobileImg: "Projects for portfolio/aurelium/aurelium-mobile.png",
+        liveUrl: "https://aurelium-9857.myshopify.com/",
         accent: "#38bdf8",
-        bgDark: "#090d16",
-        link: "#contact"
+        bgDark: "#0b1320",
+        link: "https://aurelium-9857.myshopify.com/"
       },
       {
         id: 2,
-        title: "KINETIX MOTION",
-        category: "CREATIVE ENGINEERING",
-        tag: "WebGL 3D",
-        desc: "High-frequency WebGL 3D motion design showcase with real-time physical simulation physics.",
-        img: "assets/projects/project_2.jpg",
-        accent: "#f43f5e",
-        bgDark: "#150d18",
-        link: "#contact"
+        title: "BUTCHERY MEAT SHOP",
+        category: "SHOPIFY 2.0 / ARTISAN FOOD",
+        tag: "E-Commerce",
+        desc: "Handcrafted meat shop platform featuring ethical sourcing transparency, dynamic cuts selector, and cold-chain ordering.",
+        img: "Projects for portfolio/butchery/butchery-header.png",
+        desktopImg: "Projects for portfolio/butchery/butchery-desktop.png",
+        mobileImg: "Projects for portfolio/butchery/butchery-mobile.png",
+        liveUrl: "https://butchery-740.myshopify.com/",
+        accent: "#ef4444",
+        bgDark: "#1a0a0a",
+        link: "https://butchery-740.myshopify.com/"
       },
       {
         id: 3,
-        title: "AURA SPATIAL OS",
-        category: "SPATIAL COMPUTING",
-        tag: "VisionOS",
-        desc: "VisionOS volumetric spatial interface with fluid gesture physics and contextual workspaces.",
-        img: "assets/projects/project_3.jpg",
-        accent: "#818cf8",
-        bgDark: "#0e111d",
-        link: "#contact"
+        title: "CENTATRAINER",
+        category: "PERFORMANCE APPAREL",
+        tag: "Vintage Punk Wave",
+        desc: "High-octane athletic performance and streetwear collection inspired by vintage Japanese wave aesthetics and bespoke typography.",
+        img: "Projects for portfolio/centa/centa-header.png",
+        desktopImg: "Projects for portfolio/centa/centa-desktop.png",
+        mobileImg: "Projects for portfolio/centa/centa-mobile.png",
+        liveUrl: "https://centatrainer.com/",
+        accent: "#f43f5e",
+        bgDark: "#181210",
+        link: "https://centatrainer.com/"
       },
       {
         id: 4,
-        title: "CHRONO WEALTH OS",
-        category: "FINTECH ECOSYSTEM",
-        tag: "Fintech Platform",
-        desc: "Algorithmic multi-asset portfolio command center with ultra-low latency data streaming.",
-        img: null,
-        accent: "#10b981",
-        bgDark: "#061814",
-        link: "#contact"
+        title: "FANTA BENCHO",
+        category: "BRAND EXPERIENCE",
+        tag: "Interactive Web",
+        desc: "Dynamic beverage showcase with bold citrus visual hierarchy, fluid animations, and high-impact brand storytelling.",
+        img: "Projects for portfolio/fanta/Fanta-header.png",
+        desktopImg: "Projects for portfolio/fanta/Fanta-header.png",
+        desktopVideo: "Projects for portfolio/fanta/fanta-demo.mp4",
+        mobileImg: "Projects for portfolio/fanta/Fanta-header.png",
+        mobileVideo: "Projects for portfolio/fanta/fanta-demo.mp4",
+        liveUrl: "https://fanta-jyregnb0.myshopify.com/",
+        accent: "#f97316",
+        bgDark: "#1f1003",
+        link: "https://fanta-jyregnb0.myshopify.com/"
       },
       {
         id: 5,
-        title: "NEURAL STUDIO X",
-        category: "AI GENERATIVE RESEARCH",
-        tag: "AI Architecture",
-        desc: "Deep-learning prompt-to-3D visual engine with real-time neural diffusion pipelines.",
-        img: null,
-        accent: "#a855f7",
-        bgDark: "#150b24",
-        link: "#contact"
+        title: "HAWLUCHA PROTEIN",
+        category: "SHOPIFY 2.0 / FITNESS",
+        tag: "Sports Nutrition",
+        desc: "Premium athletic supplement brand designed for maximum impact, performance nutrition subscriptions, and rapid checkout.",
+        img: "Projects for portfolio/Hawlucha/hawlucha-header.png",
+        desktopImg: "Projects for portfolio/Hawlucha/hawlucha-desktop.png",
+        mobileImg: "Projects for portfolio/Hawlucha/hawlucha-mobile.png",
+        liveUrl: "https://supplement-8817.myshopify.com/",
+        accent: "#84cc16",
+        bgDark: "#0d1306",
+        link: "https://supplement-8817.myshopify.com/"
       },
       {
         id: 6,
-        title: "VELOCITY KINETIC",
-        category: "LUXURY COMMERCE",
-        tag: "Next.js & Shopify",
-        desc: "Editorial brand identity, interactive 3D product customizer, and headless e-commerce.",
-        img: null,
-        accent: "#f59e0b",
-        bgDark: "#1a1205",
-        link: "#contact"
+        title: "LUNOX LIGHTING",
+        category: "CONSUMER HARDWARE",
+        tag: "Smart Projections",
+        desc: "Magical holiday and architectural projection system store engineered with interactive pattern showcases and video testimonials.",
+        img: "Projects for portfolio/lunox/Lunox-header.png",
+        desktopImg: "Projects for portfolio/lunox/Lunox-desktop.png",
+        mobileImg: "Projects for portfolio/lunox/Lunox-mobile.png",
+        liveUrl: "https://christmas-projector-lights.myshopify.com/",
+        accent: "#eab308",
+        bgDark: "#151307",
+        link: "https://christmas-projector-lights.myshopify.com/"
       },
       {
         id: 7,
-        title: "MONOLITH SOUND",
-        category: "AUDIO HARDWARE / UI",
-        tag: "Spatial Audio",
-        desc: "Analog-digital hybrid synthesizer interface with dynamic harmonic spectrum visualizers.",
-        img: null,
-        accent: "#06b6d4",
-        bgDark: "#05151b",
-        link: "#contact"
+        title: "MANGA MINT",
+        category: "SHOPIFY 2.0 / POP CULTURE",
+        tag: "Collectibles Hub",
+        desc: "Specialty manga and collectible store featuring volume filtering, pre-order queues, and an authentic manga reader community vibe.",
+        img: "Projects for portfolio/manga-mint/manga-header.png",
+        desktopImg: "Projects for portfolio/manga-mint/manga-desktop.png",
+        mobileImg: "Projects for portfolio/manga-mint/manga-mobile.png",
+        liveUrl: "https://mangamint-2.myshopify.com/",
+        accent: "#f97316",
+        bgDark: "#180d05",
+        link: "https://mangamint-2.myshopify.com/"
       },
       {
         id: 8,
-        title: "SYNAPSE BIOMETRICS",
-        category: "HEALTH BIOTECH",
-        tag: "Biotech Dashboard",
-        desc: "Preventative circadian & vital biomarker monitoring dashboard with predictive telemetry.",
-        img: null,
-        accent: "#ec4899",
-        bgDark: "#1a0814",
-        link: "#contact"
+        title: "SAGE BOTANICALS",
+        category: "LUXURY SKINCARE",
+        tag: "Organic Beauty",
+        desc: "Clean botanical cosmetics & restorative skin wellness flagship featuring routine quizzes, clinical trial cards & minimalist elegance.",
+        img: "Projects for portfolio/sage/sage-header.png",
+        desktopImg: "Projects for portfolio/sage/sage-desktop.png",
+        mobileImg: "Projects for portfolio/sage/sage-mobile.png",
+        liveUrl: "https://sage-10102.myshopify.com/",
+        accent: "#d4af37",
+        bgDark: "#19150d",
+        link: "https://sage-10102.myshopify.com/"
       },
       {
         id: 9,
-        title: "ECLIPSE STUDIOS",
-        category: "CREATIVE PRODUCTION",
-        tag: "Motion Direction",
-        desc: "Avant-garde film production agency site with dynamic WebGL showreels and typography.",
-        img: null,
-        accent: "#e2e8f0",
-        bgDark: "#111318",
-        link: "#contact"
+        title: "VLORA FINE JEWELRY",
+        category: "FINE JEWELRY / LUXURY",
+        tag: "Diamonds & Bands",
+        desc: "Luxury wedding ring and fine diamond atelier with carat filtering, 360-degree band inspection & bespoke appointment booking.",
+        img: "Projects for portfolio/Vlora/vlora-header.png",
+        desktopImg: "Projects for portfolio/Vlora/vlora-desktop.png",
+        mobileImg: "Projects for portfolio/Vlora/vlora-mobile.png",
+        liveUrl: "https://wedding-ring-113.myshopify.com/",
+        accent: "#e2b887",
+        bgDark: "#16120e",
+        link: "https://wedding-ring-113.myshopify.com/"
+      },
+      {
+        id: 10,
+        title: "ZHUXIN CLINICAL",
+        category: "CLINICAL DERMATOLOGY",
+        tag: "Active Serums",
+        desc: "Clinical-grade active serum storefront focusing on scientific formulations, clinical trial statistics, and minimalist aesthetic.",
+        img: "Projects for portfolio/zhuxin/zhuxin-header.png",
+        desktopImg: "Projects for portfolio/zhuxin/zhuxin-desktop.png",
+        mobileImg: "Projects for portfolio/zhuxin/zhuxin-mobile.png",
+        liveUrl: "https://serum-9929.myshopify.com/",
+        accent: "#d97706",
+        bgDark: "#161109",
+        link: "https://serum-9929.myshopify.com/"
       }
     ];
 
     const TOTAL_CARDS = PROJECTS_DATA.length;
 
-    // WebGL Renderer Setup
+    // WebGL Renderer Setup (100% True Original Color Fidelity - No Tone Mapping or Color Space Distortion)
     const renderer = new THREE.WebGLRenderer({
       canvas: canvasEl,
       antialias: true,
@@ -1197,20 +1836,29 @@
       powerPreference: 'high-performance'
     });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.05;
+
+    // Guarantee matching sRGB pipeline across renderer and textures
+    if ('outputColorSpace' in renderer) {
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+    } else if ('outputEncoding' in renderer) {
+      renderer.outputEncoding = THREE.sRGBEncoding;
+    }
+    renderer.toneMapping = THREE.NoToneMapping;
+    if ('toneMappingExposure' in renderer) {
+      renderer.toneMappingExposure = 1.0;
+    }
 
     const scene = new THREE.Scene();
 
-    // Studio Lighting
-    const ambLight = new THREE.AmbientLight(0xffffff, 0.92);
+    // Studio Lighting (Chassis and accents only - Screen Mesh uses unlit MeshBasicMaterial for 100% true color)
+    const ambLight = new THREE.AmbientLight(0xffffff, 0.95);
     scene.add(ambLight);
 
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.75);
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.7);
     dirLight1.position.set(6, 9, 8);
     scene.add(dirLight1);
 
-    const dirLight2 = new THREE.DirectionalLight(0xe7e8eb, 0.45);
+    const dirLight2 = new THREE.DirectionalLight(0xe7e8eb, 0.4);
     dirLight2.position.set(-6, -5, -4);
     scene.add(dirLight2);
 
@@ -1232,193 +1880,310 @@
     curve.curveType = 'catmullrom';
     curve.tension = 0.5;
 
-    // Card Plane Geometry with subtle cylindrical curvature
-    const CARD_W = 3.65;
-    const CARD_H = 2.4;
-    const cardGeo = new THREE.PlaneGeometry(CARD_W, CARD_H, 32, 16);
-    const posAttr = cardGeo.attributes.position;
-    for (let i = 0; i < posAttr.count; i++) {
-      const px = posAttr.getX(i);
-      posAttr.setZ(i, -Math.pow(px / (CARD_W * 0.5), 2) * 0.18);
-    }
-    cardGeo.computeVertexNormals();
+    // Premium Studio Chassis & Display Dimensions
+    // Width 3.84, Height 2.28 - matching modern 16:9.5 panoramic studio displays
+    const CHASSIS_W = 3.84;
+    const CHASSIS_H = 2.28;
+    const chassisGeo = new THREE.PlaneGeometry(CHASSIS_W, CHASSIS_H);
 
-    // High-resolution procedural texture generator for mockups
-    function createProceduralCardTexture(data, idx) {
-      const w = 1024;
-      const h = 672;
+    // Screen Dimensions: Width 3.696, Height 1.836 (Ratio ~ 2.013, exactly matching project header images)
+    const SCREEN_W = 3.696;
+    const SCREEN_H = 1.836;
+    const screenGeo = new THREE.PlaneGeometry(SCREEN_W, SCREEN_H);
+
+    // 3D Ambient Drop Shadow Geometry & Texture
+    const shadowGeo = new THREE.PlaneGeometry(CHASSIS_W * 1.10, CHASSIS_H * 1.12);
+    function createShadowTexture() {
+      const w = 512;
+      const h = 320;
       const cvs = document.createElement('canvas');
       cvs.width = w;
       cvs.height = h;
       const ctx = cvs.getContext('2d');
-
-      // Background Gradient
-      const grad = ctx.createLinearGradient(0, 0, w, h);
-      grad.addColorStop(0, data.bgDark || '#0b0f19');
-      grad.addColorStop(1, '#020408');
+      const grad = ctx.createRadialGradient(w / 2, h / 2, 40, w / 2, h / 2, w / 2);
+      grad.addColorStop(0, 'rgba(0, 0, 0, 0.42)');
+      grad.addColorStop(0.35, 'rgba(0, 0, 0, 0.22)');
+      grad.addColorStop(0.7, 'rgba(0, 0, 0, 0.06)');
+      grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, w, h);
+      ctx.beginPath();
+      ctx.roundRect(16, 16, w - 32, h - 32, 60);
+      ctx.fill();
 
-      // Subtle ambient glowing orb
-      const radGrad = ctx.createRadialGradient(w * 0.72, h * 0.35, 10, w * 0.72, h * 0.35, 380);
-      radGrad.addColorStop(0, (data.accent || '#38bdf8') + '33');
-      radGrad.addColorStop(1, 'transparent');
-      ctx.fillStyle = radGrad;
-      ctx.fillRect(0, 0, w, h);
+      const tex = new THREE.CanvasTexture(cvs);
+      if ('outputColorSpace' in renderer && 'colorSpace' in tex) {
+        tex.colorSpace = THREE.SRGBColorSpace;
+      } else if ('encoding' in tex) {
+        tex.encoding = THREE.sRGBEncoding;
+      }
+      return tex;
+    }
+    const sharedShadowTex = createShadowTexture();
 
-      // Browser Mockup Top Bar
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
-      ctx.fillRect(0, 0, w, 52);
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
-      ctx.fillRect(0, 52, w, 1);
+    // Procedural Chassis Texture Generator (1200x712, 75% texture memory savings)
+    function createChassisTexture(data, idx) {
+      const w = 2400;
+      const h = 1425;
+      const cvs = document.createElement('canvas');
+      cvs.width = 1200;
+      cvs.height = 712;
+      const ctx = cvs.getContext('2d');
+      ctx.scale(0.5, 0.5);
 
-      // Traffic Light Buttons
-      const dotColors = ['#ff5f56', '#ffbd2e', '#27c93f'];
-      dotColors.forEach((color, dIdx) => {
-        ctx.fillStyle = color;
+      // Chassis Body Background (Obsidian dark titanium with subtle gradient)
+      const bodyGrad = ctx.createLinearGradient(0, 0, 0, h);
+      bodyGrad.addColorStop(0, '#0d111c');
+      bodyGrad.addColorStop(1, '#080b13');
+      ctx.fillStyle = bodyGrad;
+      ctx.beginPath();
+      ctx.roundRect(0, 0, w, h, 30);
+      ctx.fill();
+
+      // Outer Bevel Edge Border (Hairline spec light)
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.16)';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      // Top Chrome Header Bar
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
+      ctx.beginPath();
+      ctx.roundRect(3, 3, w - 6, 138, [28, 28, 0, 0]);
+      ctx.fill();
+
+      // Header Divider Line
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(3, 140);
+      ctx.lineTo(w - 3, 140);
+      ctx.stroke();
+
+      // macOS Traffic Light Buttons with Glass Highlight
+      const dotColors = [
+        { bg: '#ff5f56', border: '#e0443e' },
+        { bg: '#ffbd2e', border: '#dea123' },
+        { bg: '#27c93f', border: '#1aab29' }
+      ];
+      dotColors.forEach((dot, dIdx) => {
+        const cx = 66 + dIdx * 34;
+        const cy = 70;
+        const r = 9.5;
+        ctx.fillStyle = dot.bg;
         ctx.beginPath();
-        ctx.arc(36 + dIdx * 20, 26, 6, 0, Math.PI * 2);
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = dot.border;
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+
+        // Delicate glass highlight shine
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.beginPath();
+        ctx.arc(cx - 2.5, cy - 2.5, 3, 0, Math.PI * 2);
         ctx.fill();
       });
 
-      // Browser URL Pill
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.06)';
+      // Browser URL Pill Capsule (Refined Glass Pill)
+      const pillW = 600;
+      const pillH = 56;
+      const pillX = (w - pillW) / 2;
+      const pillY = 42;
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.055)';
       ctx.beginPath();
-      ctx.roundRect(w / 2 - 140, 12, 280, 28, 6);
+      ctx.roundRect(pillX, pillY, pillW, pillH, 10);
       ctx.fill();
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-      ctx.font = '600 12px "Plus Jakarta Sans", sans-serif';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+
+      // Secure Padlock & SSL Dot
+      ctx.fillStyle = '#10b981';
+      ctx.beginPath();
+      ctx.arc(pillX + 28, pillY + pillH / 2, 4.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // URL Hostname
+      ctx.fillStyle = 'rgba(226, 232, 240, 0.9)';
+      ctx.font = '600 20px "Plus Jakarta Sans", sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('https://' + data.title.toLowerCase().replace(/[^a-z0-9]/g, '') + '.io', w / 2, 30);
+      const cleanUrl = 'https://' + (data.title || '').toLowerCase().replace(/[^a-z0-9]/g, '') + '.myshopify.com';
+      ctx.fillText(cleanUrl, w / 2 + 8, pillY + 35);
 
-      // UI Grid lines
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
-      ctx.lineWidth = 1;
-      for (let y = 100; y < h; y += 70) {
-        ctx.beginPath();
-        ctx.moveTo(40, y);
-        ctx.lineTo(w - 40, y);
-        ctx.stroke();
-      }
+      // Project Category Tag (Right Side)
+      ctx.fillStyle = data.accent || '#ff2a44';
+      ctx.font = '800 18px "Plus Jakarta Sans", sans-serif';
+      ctx.textAlign = 'right';
+      const catText = '0' + (idx + 1) + ' // ' + (data.category || 'SHOPIFY 2.0');
+      ctx.fillText(catText, w - 60, 78);
 
-      // Project Number Tag
-      ctx.fillStyle = data.accent || '#38bdf8';
-      ctx.font = '800 14px "Plus Jakarta Sans", sans-serif';
+      // Screen Cutout Frame in Backplate (Recessed OLED Bezel)
+      const screenX = 45;
+      const screenY = 170;
+      const screenW = 2310;
+      const screenH = 1148;
+
+      // Dark recessed bezel around the display
+      ctx.fillStyle = '#05070c';
+      ctx.beginPath();
+      ctx.roundRect(screenX - 2, screenY - 2, screenW + 4, screenH + 4, 10);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.09)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Bottom Hardware Footer Bar (Chin)
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
+      ctx.font = '700 16px "Plus Jakarta Sans", sans-serif';
       ctx.textAlign = 'left';
-      ctx.fillText('0' + (idx + 1) + ' // ' + data.category, 54, 120);
+      ctx.fillText(data.title + ' — ' + (data.tag || 'CASE STUDY'), screenX + 10, h - 34);
 
-      // Project Large Title
-      ctx.fillStyle = '#ffffff';
-      ctx.font = '900 48px "Montserrat", sans-serif';
-      ctx.fillText(data.title, 54, 175);
-
-      // Subtitle / Description
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
-      ctx.font = '400 18px "Plus Jakarta Sans", sans-serif';
-      const words = data.desc.split(' ');
-      let line = '';
-      let lineY = 220;
-      for (let n = 0; n < words.length; n++) {
-        const testLine = line + words[n] + ' ';
-        if (ctx.measureText(testLine).width > 480 && n > 0) {
-          ctx.fillText(line, 54, lineY);
-          line = words[n] + ' ';
-          lineY += 28;
-        } else {
-          line = testLine;
-        }
-      }
-      ctx.fillText(line, 54, lineY);
-
-      // Interactive UI Mockup Dashboard Graphic (Right Side)
-      const cardX = 580;
-      const cardY = 120;
-      const cardW = 390;
-      const cardH = 480;
-
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
+      // Interactive Click Indicator Pill
+      const promptW = 320;
+      const promptH = 38;
+      const promptX = w - screenX - promptW;
+      const promptY = h - 54;
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
       ctx.beginPath();
-      ctx.roundRect(cardX, cardY, cardW, cardH, 16);
+      ctx.roundRect(promptX, promptY, promptW, promptH, 19);
       ctx.fill();
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+      ctx.lineWidth = 1;
       ctx.stroke();
 
-      // Mini chart / waveform inside UI panel
-      ctx.strokeStyle = data.accent || '#38bdf8';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      for (let x = 0; x <= cardW - 60; x += 15) {
-        const py = cardY + 220 + Math.sin((x + idx * 40) * 0.04) * 45 + Math.cos(x * 0.08) * 15;
-        if (x === 0) ctx.moveTo(cardX + 30 + x, py);
-        else ctx.lineTo(cardX + 30 + x, py);
-      }
-      ctx.stroke();
-
-      // UI stat cards
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.07)';
-      ctx.beginPath();
-      ctx.roundRect(cardX + 30, cardY + 30, 155, 90, 10);
-      ctx.fill();
-      ctx.roundRect(cardX + 205, cardY + 30, 155, 90, 10);
-      ctx.fill();
-
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
-      ctx.font = '600 11px "Plus Jakarta Sans", sans-serif';
-      ctx.fillText('ACTIVE TELEMETRY', cardX + 45, cardY + 58);
-      ctx.fillText('EFFICIENCY RATING', cardX + 220, cardY + 58);
-
-      ctx.fillStyle = '#ffffff';
-      ctx.font = '800 24px "Montserrat", sans-serif';
-      ctx.fillText('99.4%', cardX + 45, cardY + 96);
-      ctx.fillText('60 FPS', cardX + 220, cardY + 96);
-
-      // Bottom Tech Badge
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
-      ctx.beginPath();
-      ctx.roundRect(54, h - 85, 140, 36, 18);
-      ctx.fill();
-      ctx.fillStyle = data.accent || '#38bdf8';
-      ctx.font = '700 12px "Plus Jakarta Sans", sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText(data.tag || 'CASE STUDY', 124, h - 62);
+      ctx.fillStyle = data.accent || '#ff2a44';
+      ctx.font = '800 14px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('CLICK DISPLAY TO PREVIEW ↗', promptX + promptW / 2, promptY + 24);
 
       const tex = new THREE.CanvasTexture(cvs);
+      if ('outputColorSpace' in renderer && 'colorSpace' in tex) {
+        tex.colorSpace = THREE.SRGBColorSpace;
+      } else if ('encoding' in tex) {
+        tex.encoding = THREE.sRGBEncoding;
+      }
       tex.minFilter = THREE.LinearFilter;
       tex.generateMipmaps = false;
       return tex;
     }
 
-    // Load textures and construct meshes
+    // Procedural Screen Fallback Texture (1155x574, 75% texture memory savings)
+    function createFallbackScreenTexture(data, idx) {
+      const cvs = document.createElement('canvas');
+      cvs.width = 1155;
+      cvs.height = 574;
+      const ctx = cvs.getContext('2d');
+      ctx.scale(0.5, 0.5);
+
+      ctx.fillStyle = '#070a10';
+      ctx.fillRect(0, 0, cvs.width, cvs.height);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '900 56px "Montserrat", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(data.title, cvs.width / 2, cvs.height / 2 - 16);
+
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+      ctx.font = '600 22px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText(data.category || 'SHOPIFY 2.0', cvs.width / 2, cvs.height / 2 + 42);
+
+      const tex = new THREE.CanvasTexture(cvs);
+      if ('outputColorSpace' in renderer && 'colorSpace' in tex) {
+        tex.colorSpace = THREE.SRGBColorSpace;
+      } else if ('encoding' in tex) {
+        tex.encoding = THREE.sRGBEncoding;
+      }
+      tex.minFilter = THREE.LinearFilter;
+      tex.generateMipmaps = false;
+      return tex;
+    }
+
+    // Load textures and construct luxury 3D card presentations
+    const cardGroups = [];
     const cardMeshes = [];
     const textureLoader = new THREE.TextureLoader();
+    const maxAnisotropy = renderer.capabilities.getMaxAnisotropy ? renderer.capabilities.getMaxAnisotropy() : 4;
 
     PROJECTS_DATA.forEach((data, i) => {
-      const defaultTex = createProceduralCardTexture(data, i);
-      const mat = new THREE.MeshStandardMaterial({
-        map: defaultTex,
-        roughness: 0.22,
-        metalness: 0.12,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 1.0
-      });
+      const cardGroup = new THREE.Group();
+      cardGroup.userData = { index: i, project: data };
 
-      // If project has an image file, load image texture seamlessly
+      // 0. Soft Ambient Drop Shadow Mesh (Gives realistic 3D floating depth)
+      const shadowMat = new THREE.MeshBasicMaterial({
+        map: sharedShadowTex,
+        transparent: true,
+        opacity: 0.5,
+        depthWrite: false
+      });
+      const shadowMesh = new THREE.Mesh(shadowGeo, shadowMat);
+      shadowMesh.position.set(0, -0.06, -0.035);
+      cardGroup.add(shadowMesh);
+      cardGroup.userData.shadowMesh = shadowMesh;
+
+      // 1. Sleek Chassis Frame Backplate
+      const chassisTex = createChassisTexture(data, i);
+      const chassisMat = new THREE.MeshBasicMaterial({
+        map: chassisTex,
+        toneMapped: false,
+        transparent: true,
+        opacity: 1.0,
+        color: 0xffffff
+      });
+      const chassisMesh = new THREE.Mesh(chassisGeo, chassisMat);
+      chassisMesh.userData = { index: i, project: data, group: cardGroup };
+      cardGroup.add(chassisMesh);
+      cardGroup.userData.chassisMesh = chassisMesh;
+
+      // 2. Pure True-Color Display Screen Mesh (Unlit MeshBasicMaterial - 100% True To Original Asset)
+      const fallbackTex = createFallbackScreenTexture(data, i);
+      const screenMat = new THREE.MeshBasicMaterial({
+        map: fallbackTex,
+        toneMapped: false,
+        transparent: false,
+        opacity: 1.0,
+        color: 0xffffff
+      });
+      const screenMesh = new THREE.Mesh(screenGeo, screenMat);
+      screenMesh.position.set(0, -0.050, 0.01);
+      screenMesh.userData = { index: i, project: data, group: cardGroup };
+      cardGroup.add(screenMesh);
+      cardGroup.userData.screenMesh = screenMesh;
+
+      // Load original image with 100% color fidelity and maximum sharpness
       if (data.img) {
         textureLoader.load(data.img, (loadedTex) => {
-          loadedTex.minFilter = THREE.LinearFilter;
+          if ('outputColorSpace' in renderer && 'colorSpace' in loadedTex) {
+            loadedTex.colorSpace = THREE.SRGBColorSpace;
+          } else if ('encoding' in loadedTex) {
+            loadedTex.encoding = THREE.sRGBEncoding;
+          }
+          loadedTex.anisotropy = maxAnisotropy;
+          loadedTex.minFilter = THREE.LinearMipmapLinearFilter;
+          loadedTex.magFilter = THREE.LinearFilter;
           loadedTex.generateMipmaps = true;
-          mat.map = loadedTex;
-          mat.needsUpdate = true;
+
+          // Aspect ratio fitting (cover without distorting pixel proportions):
+          if (loadedTex.image && loadedTex.image.width && loadedTex.image.height) {
+            const imgAspect = loadedTex.image.width / loadedTex.image.height;
+            const screenAspect = SCREEN_W / SCREEN_H;
+            if (imgAspect > screenAspect) {
+              loadedTex.repeat.set(screenAspect / imgAspect, 1);
+              loadedTex.offset.set((1 - screenAspect / imgAspect) / 2, 0);
+            } else {
+              loadedTex.repeat.set(1, imgAspect / screenAspect);
+              loadedTex.offset.set(0, (1 - imgAspect / screenAspect) / 2);
+            }
+          }
+
+          screenMat.map = loadedTex;
+          screenMat.needsUpdate = true;
         }, undefined, (err) => {
           console.warn('Image load error for card', i, err);
         });
       }
 
-      const mesh = new THREE.Mesh(cardGeo, mat);
-      mesh.userData = { index: i, project: data };
-      scene.add(mesh);
-      cardMeshes.push(mesh);
+      scene.add(cardGroup);
+      cardGroups.push(cardGroup);
+      cardMeshes.push(screenMesh, chassisMesh);
     });
 
     // Raycasting for interactive card hovering & clicking
@@ -1437,7 +2202,7 @@
     let dragVelocity = 0;
     let activeCardIndex = 0;
 
-    // Sizing & Aspect Ratio
+    // Sizing & Responsive Aspect Ratio Auto-Fitting
     function updateDimensions() {
       const rect = stageEl.getBoundingClientRect();
       const w = rect.width || window.innerWidth;
@@ -1445,8 +2210,28 @@
       renderer.setSize(w, h);
       camera.aspect = w / h;
 
-      const isMobile = w <= 768;
-      camera.position.z = isMobile ? 9.2 : 7.6;
+      // Ensure center card (CHASSIS_W = 3.84) fits with comfortable margins on all mobile & desktop viewports
+      const targetCardW = CHASSIS_W;
+      if (camera.aspect < 1.0) {
+        // Mobile portrait: compute exact camera distance so card fits horizontally without clipping
+        const horizontalMargin = w <= 480 ? 1.15 : 1.22;
+        const desiredVisibleW = targetCardW * horizontalMargin;
+        const desiredVisibleH = desiredVisibleW / camera.aspect;
+        const halfFovRad = THREE.MathUtils.degToRad(camera.fov * 0.5);
+        const reqDist = (desiredVisibleH * 0.5) / Math.tan(halfFovRad);
+        // Center card is at curve Z = 1.8
+        camera.position.z = 1.8 + reqDist;
+        // Vertically raise camera lookAt on mobile so card floats nicely above the bottom HUD
+        camera.position.y = w <= 480 ? 0.38 : 0.22;
+      } else if (camera.aspect < 1.45) {
+        // Tablet / square viewport
+        camera.position.z = 8.6;
+        camera.position.y = 0.08;
+      } else {
+        // Desktop landscape
+        camera.position.z = 7.6;
+        camera.position.y = 0.0;
+      }
       camera.updateProjectionMatrix();
     }
 
@@ -1476,6 +2261,8 @@
       targetCarouselIndex = targetIdx;
       updateActiveHUD();
 
+      if (isModalOpen) return; // Never scroll background page while modal is active
+
       if (!sectionEl) return;
       const sectionTop = sectionEl.getBoundingClientRect().top + window.pageYOffset;
       const scrollDist = sectionEl.offsetHeight - window.innerHeight;
@@ -1500,8 +2287,22 @@
       }
     }
 
+    let hasMouseMoved = false;
+    let cachedCanvasRect = null;
+    function refreshCanvasRect() {
+      if (canvasEl) {
+        cachedCanvasRect = canvasEl.getBoundingClientRect();
+      }
+    }
+    window.addEventListener('resize', refreshCanvasRect, { passive: true });
+    if (canvasEl) {
+      canvasEl.addEventListener('pointerenter', refreshCanvasRect, { passive: true });
+    }
+    refreshCanvasRect();
+
     // Pointer Interaction (Drag / Swipe / Momentum / Raycasting)
     function onPointerDown(e) {
+      refreshCanvasRect();
       isUserDragging = true;
       totalDragDistance = 0;
       const clientX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
@@ -1512,13 +2313,19 @@
     }
 
     function onPointerMove(e) {
+      hasMouseMoved = true;
       const clientX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
       const clientY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
 
-      // Update Mouse NDC for Raycasting
-      const rect = canvasEl.getBoundingClientRect();
-      mouseNDC.x = ((clientX - rect.left) / rect.width) * 2 - 1;
-      mouseNDC.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+      // Update Mouse NDC for Raycasting using cached bounds
+      if (!cachedCanvasRect || cachedCanvasRect.width === 0) {
+        refreshCanvasRect();
+      }
+      const rect = cachedCanvasRect;
+      if (rect && rect.width > 0) {
+        mouseNDC.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+        mouseNDC.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+      }
 
       if (!isUserDragging) return;
 
@@ -1527,20 +2334,25 @@
       dragVelocity = dx;
       lastPointerX = clientX;
 
-      const dragSensitivity = window.innerWidth <= 768 ? 260 : 440;
+      const dragSensitivity = window.innerWidth <= 768 ? 220 : 440;
       targetCarouselIndex -= dx / dragSensitivity;
       targetCarouselIndex = Math.max(-0.25, Math.min(TOTAL_CARDS - 0.75, targetCarouselIndex));
     }
 
-    function onPointerUp() {
+    function onPointerUp(e) {
       if (!isUserDragging) return;
       isUserDragging = false;
       canvasEl.style.cursor = 'grab';
 
       // If user dragged more than 8px, apply momentum and snap cleanly to nearest project
       if (totalDragDistance > 8) {
-        targetCarouselIndex = Math.round(targetCarouselIndex - dragVelocity / 40);
-        const snapIdx = Math.max(0, Math.min(TOTAL_CARDS - 1, targetCarouselIndex));
+        let snapIdx;
+        if (Math.abs(dragVelocity) > 2.0) {
+          snapIdx = dragVelocity < 0 ? Math.ceil(targetCarouselIndex) : Math.floor(targetCarouselIndex);
+        } else {
+          snapIdx = Math.round(targetCarouselIndex);
+        }
+        snapIdx = Math.max(0, Math.min(TOTAL_CARDS - 1, snapIdx));
         goToProject(snapIdx, true);
       }
     }
@@ -1563,25 +2375,340 @@
       raycaster.setFromCamera(mouseNDC, camera);
       const intersects = raycaster.intersectObjects(cardMeshes);
       if (intersects.length > 0) {
+        e.preventDefault();
+        e.stopPropagation();
         const clickedMesh = intersects[0].object;
         if (clickedMesh.userData && typeof clickedMesh.userData.index === 'number') {
           const clickedIdx = clickedMesh.userData.index;
-          // If already centered, follow link
-          if (Math.abs(currentCarouselIndex - clickedIdx) < 0.35) {
-            const proj = clickedMesh.userData.project;
-            if (proj && proj.link) {
-              if (proj.link.startsWith('#')) {
-                const targetEl = document.querySelector(proj.link);
-                if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth' });
-              } else {
-                window.open(proj.link, '_blank');
-              }
-            }
-          } else {
-            // Smoothly center this project card and sync scroll
-            goToProject(clickedIdx, true);
-          }
+          // Open the luxury project preview modal immediately
+          openProjectModal(clickedIdx);
         }
+      }
+    });
+
+    // Explore Project button on HUD also opens preview modal
+    if (hudBtn) {
+      hudBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openProjectModal(activeCardIndex);
+      });
+    }
+
+    /* -------------------------------------------------------------- */
+    /* LUXURY PROJECT PREVIEW MODAL CONTROLLER (DESKTOP & MOBILE)     */
+    /* -------------------------------------------------------------- */
+    const modalEl = document.getElementById('projectModal');
+    const modalBackdrop = document.getElementById('projectModalBackdrop');
+    const modalCloseBtn = document.getElementById('modalCloseBtn');
+    const trafficCloseDot = document.getElementById('trafficCloseDot');
+    const modalCategoryBadge = document.getElementById('modalCategoryBadge');
+    const modalProjectTitle = document.getElementById('modalProjectTitle');
+    const modalLiveLinkPill = document.getElementById('modalLiveLinkPill');
+    const browserUrlText = document.getElementById('browserUrlText');
+    const browserOpenLink = document.getElementById('browserOpenLink');
+    const viewBtnDesktop = document.getElementById('viewBtnDesktop');
+    const viewBtnMobile = document.getElementById('viewBtnMobile');
+    const modalPreviewStage = document.getElementById('modalPreviewStage');
+    const desktopFrameWrap = document.getElementById('desktopFrameWrap');
+    const mobileFrameWrap = document.getElementById('mobileFrameWrap');
+    const desktopScrollViewport = document.getElementById('desktopScrollViewport');
+    const mobileScrollViewport = document.getElementById('mobileScrollViewport');
+    const desktopPreviewImg = document.getElementById('desktopPreviewImg');
+    const desktopPreviewVideo = document.getElementById('desktopPreviewVideo');
+    const mobilePreviewImg = document.getElementById('mobilePreviewImg');
+    const mobilePreviewVideo = document.getElementById('mobilePreviewVideo');
+    const desktopScrollHint = document.getElementById('desktopScrollHint');
+    const mobileScrollHint = document.getElementById('mobileScrollHint');
+    const desktopScrollTopBtn = document.getElementById('desktopScrollTopBtn');
+    const mobileScrollTopBtn = document.getElementById('mobileScrollTopBtn');
+    const modalPrevProjectBtn = document.getElementById('modalPrevProjectBtn');
+    const modalNextProjectBtn = document.getElementById('modalNextProjectBtn');
+    const modalCurrentIndex = document.getElementById('modalCurrentIndex');
+    const modalTotalProjects = document.getElementById('modalTotalProjects');
+
+    let modalActiveIndex = 0;
+    let modalCurrentView = 'desktop';
+    let isModalOpen = false;
+    let modalLockedScrollY = 0;
+
+    function lockWindowScroll() {
+      if (isModalOpen) {
+        const currentY = window.pageYOffset || document.documentElement.scrollTop || 0;
+        if (Math.abs(currentY - modalLockedScrollY) > 0.5) {
+          window.scrollTo(0, modalLockedScrollY);
+        }
+      }
+    }
+
+    function openProjectModal(index) {
+      if (!modalEl) return;
+      modalActiveIndex = Math.max(0, Math.min(TOTAL_CARDS - 1, index));
+      const project = PROJECTS_DATA[modalActiveIndex];
+      if (!project) return;
+
+      // Capture exact page scroll position so the background stays locked at Projects section
+      modalLockedScrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+
+      // Update meta
+      if (modalCategoryBadge) modalCategoryBadge.textContent = project.category || 'SHOPIFY 2.0';
+      if (modalProjectTitle) modalProjectTitle.textContent = project.title;
+      if (modalLiveLinkPill) modalLiveLinkPill.href = project.liveUrl || project.link || '#';
+      if (browserUrlText) browserUrlText.textContent = project.liveUrl || project.link || 'https://shopify.com';
+      if (browserOpenLink) browserOpenLink.href = project.liveUrl || project.link || '#';
+      if (modalEl) modalEl.style.setProperty('--project-accent', project.accent || '#ff2a44');
+
+      // Update project counter
+      if (modalCurrentIndex) {
+        modalCurrentIndex.textContent = (modalActiveIndex + 1 < 10 ? '0' : '') + (modalActiveIndex + 1);
+      }
+      if (modalTotalProjects) {
+        modalTotalProjects.textContent = (TOTAL_CARDS < 10 ? '0' : '') + TOTAL_CARDS;
+      }
+
+      // Load media for both desktop and mobile
+      loadProjectMedia(project);
+
+      // Reset scroll position of both frames
+      if (desktopScrollViewport) desktopScrollViewport.scrollTop = 0;
+      if (mobileScrollViewport) mobileScrollViewport.scrollTop = 0;
+      if (desktopScrollHint) desktopScrollHint.classList.remove('is-hidden');
+      if (mobileScrollHint) mobileScrollHint.classList.remove('is-hidden');
+      if (desktopScrollTopBtn) desktopScrollTopBtn.classList.remove('is-visible');
+      if (mobileScrollTopBtn) mobileScrollTopBtn.classList.remove('is-visible');
+
+      // Set view (default to mobile frame on mobile screens)
+      if (window.innerWidth <= 768) {
+        modalCurrentView = 'mobile';
+      }
+      setViewMode(modalCurrentView, false);
+
+      // Lock Lenis smooth scroll while modal is open
+      if (typeof lenis !== 'undefined' && lenis && typeof lenis.stop === 'function') {
+        lenis.stop();
+      }
+
+      // Open modal
+      modalEl.classList.add('is-open');
+      modalEl.setAttribute('aria-hidden', 'false');
+      document.documentElement.classList.add('project-modal-open');
+      document.body.classList.add('project-modal-open');
+      isModalOpen = true;
+
+      // Add scroll listener to guarantee background position stays locked in place
+      window.addEventListener('scroll', lockWindowScroll, { passive: true });
+
+      // Smoothly align the 3D ribbon carousel without scrolling the page window
+      targetCarouselIndex = modalActiveIndex;
+      updateActiveHUD();
+    }
+
+    function closeProjectModal() {
+      if (!modalEl) return;
+      modalEl.classList.remove('is-open');
+      modalEl.setAttribute('aria-hidden', 'true');
+      document.documentElement.classList.remove('project-modal-open');
+      document.body.classList.remove('project-modal-open');
+      isModalOpen = false;
+
+      // Remove window scroll lock listener
+      window.removeEventListener('scroll', lockWindowScroll);
+
+      // Restore exact scroll position on projects section
+      window.scrollTo(0, modalLockedScrollY);
+      if (typeof lenis !== 'undefined' && lenis && typeof lenis.scrollTo === 'function') {
+        lenis.scrollTo(modalLockedScrollY, { immediate: true });
+      }
+
+      // Resume Lenis smooth scroll
+      if (typeof lenis !== 'undefined' && lenis && typeof lenis.start === 'function') {
+        lenis.start();
+      }
+
+      // Pause videos if playing
+      if (desktopPreviewVideo) {
+        desktopPreviewVideo.pause();
+        desktopPreviewVideo.src = '';
+      }
+      if (mobilePreviewVideo) {
+        mobilePreviewVideo.pause();
+        mobilePreviewVideo.src = '';
+      }
+    }
+
+    function setViewMode(view, animate = true) {
+      modalCurrentView = view;
+      const switcher = document.querySelector('.modal-view-switcher');
+      if (switcher) switcher.setAttribute('data-active', view);
+
+      if (view === 'desktop') {
+        if (viewBtnDesktop) {
+          viewBtnDesktop.classList.add('active');
+          viewBtnDesktop.setAttribute('aria-selected', 'true');
+        }
+        if (viewBtnMobile) {
+          viewBtnMobile.classList.remove('active');
+          viewBtnMobile.setAttribute('aria-selected', 'false');
+        }
+        if (desktopFrameWrap) desktopFrameWrap.style.display = 'flex';
+        if (mobileFrameWrap) mobileFrameWrap.style.display = 'none';
+        if (modalPreviewStage) modalPreviewStage.setAttribute('data-active-view', 'desktop');
+      } else {
+        if (viewBtnDesktop) {
+          viewBtnDesktop.classList.remove('active');
+          viewBtnDesktop.setAttribute('aria-selected', 'false');
+        }
+        if (viewBtnMobile) {
+          viewBtnMobile.classList.add('active');
+          viewBtnMobile.setAttribute('aria-selected', 'true');
+        }
+        if (desktopFrameWrap) desktopFrameWrap.style.display = 'none';
+        if (mobileFrameWrap) mobileFrameWrap.style.display = 'flex';
+        if (modalPreviewStage) modalPreviewStage.setAttribute('data-active-view', 'mobile');
+      }
+    }
+
+    function loadProjectMedia(project) {
+      // Desktop View
+      if (project.desktopVideo) {
+        if (desktopPreviewImg) desktopPreviewImg.style.display = 'none';
+        if (desktopPreviewVideo) {
+          desktopPreviewVideo.style.display = 'block';
+          desktopPreviewVideo.src = project.desktopVideo;
+          desktopPreviewVideo.load();
+          desktopPreviewVideo.play().catch(() => {});
+        }
+      } else {
+        if (desktopPreviewVideo) {
+          desktopPreviewVideo.pause();
+          desktopPreviewVideo.style.display = 'none';
+          desktopPreviewVideo.src = '';
+        }
+        if (desktopPreviewImg) {
+          desktopPreviewImg.style.display = 'block';
+          desktopPreviewImg.src = project.desktopImg || project.img || '';
+        }
+      }
+
+      // Mobile View
+      if (project.mobileVideo) {
+        if (mobilePreviewImg) mobilePreviewImg.style.display = 'none';
+        if (mobilePreviewVideo) {
+          mobilePreviewVideo.style.display = 'block';
+          mobilePreviewVideo.src = project.mobileVideo;
+          mobilePreviewVideo.load();
+          mobilePreviewVideo.play().catch(() => {});
+        }
+      } else {
+        if (mobilePreviewVideo) {
+          mobilePreviewVideo.pause();
+          mobilePreviewVideo.style.display = 'none';
+          mobilePreviewVideo.src = '';
+        }
+        if (mobilePreviewImg) {
+          mobilePreviewImg.style.display = 'block';
+          mobilePreviewImg.src = project.mobileImg || project.img || '';
+        }
+      }
+    }
+
+    // Scroll listeners for scroll hint and back-to-top button
+    if (desktopScrollViewport) {
+      desktopScrollViewport.addEventListener('scroll', () => {
+        const top = desktopScrollViewport.scrollTop;
+        if (desktopScrollHint) desktopScrollHint.classList.toggle('is-hidden', top > 50);
+        if (desktopScrollTopBtn) desktopScrollTopBtn.classList.toggle('is-visible', top > 240);
+      }, { passive: true });
+    }
+
+    if (mobileScrollViewport) {
+      mobileScrollViewport.addEventListener('scroll', () => {
+        const top = mobileScrollViewport.scrollTop;
+        if (mobileScrollHint) mobileScrollHint.classList.toggle('is-hidden', top > 50);
+        if (mobileScrollTopBtn) mobileScrollTopBtn.classList.toggle('is-visible', top > 240);
+      }, { passive: true });
+    }
+
+    if (desktopScrollTopBtn) {
+      desktopScrollTopBtn.addEventListener('click', () => {
+        if (desktopScrollViewport) desktopScrollViewport.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+
+    if (mobileScrollTopBtn) {
+      mobileScrollTopBtn.addEventListener('click', () => {
+        if (mobileScrollViewport) mobileScrollViewport.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+
+    // Modal Scroll Isolation: Ensure mouse wheel and touch scrolling stay inside the preview
+    // and never leak or scroll the background page behind the popup
+    if (modalEl) {
+      modalEl.addEventListener('wheel', (e) => {
+        const inScrollArea = e.target.closest('#desktopScrollViewport, #mobileScrollViewport');
+        if (!inScrollArea) {
+          e.preventDefault();
+        }
+        e.stopPropagation();
+      }, { passive: false });
+
+      modalEl.addEventListener('touchmove', (e) => {
+        const inScrollArea = e.target.closest('#desktopScrollViewport, #mobileScrollViewport');
+        if (!inScrollArea) {
+          e.preventDefault();
+        }
+        e.stopPropagation();
+      }, { passive: false });
+    }
+
+    [desktopScrollViewport, mobileScrollViewport].forEach((vp) => {
+      if (!vp) return;
+      vp.addEventListener('wheel', (e) => {
+        e.stopPropagation();
+      }, { passive: true });
+      vp.addEventListener('touchmove', (e) => {
+        e.stopPropagation();
+      }, { passive: true });
+    });
+
+    // Switcher controls
+    if (viewBtnDesktop) {
+      viewBtnDesktop.addEventListener('click', () => setViewMode('desktop', true));
+    }
+    if (viewBtnMobile) {
+      viewBtnMobile.addEventListener('click', () => setViewMode('mobile', true));
+    }
+
+    // Modal close controls
+    if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeProjectModal);
+    if (modalBackdrop) modalBackdrop.addEventListener('click', closeProjectModal);
+    if (trafficCloseDot) trafficCloseDot.addEventListener('click', closeProjectModal);
+
+    // Modal Prev / Next buttons
+    if (modalPrevProjectBtn) {
+      modalPrevProjectBtn.addEventListener('click', () => {
+        const prevIdx = (modalActiveIndex - 1 + TOTAL_CARDS) % TOTAL_CARDS;
+        openProjectModal(prevIdx);
+      });
+    }
+    if (modalNextProjectBtn) {
+      modalNextProjectBtn.addEventListener('click', () => {
+        const nextIdx = (modalActiveIndex + 1) % TOTAL_CARDS;
+        openProjectModal(nextIdx);
+      });
+    }
+
+    // Keyboard shortcuts for modal
+    window.addEventListener('keydown', (e) => {
+      if (!isModalOpen) return;
+      if (e.key === 'Escape') {
+        closeProjectModal();
+      } else if (e.key === 'ArrowLeft') {
+        const prevIdx = (modalActiveIndex - 1 + TOTAL_CARDS) % TOTAL_CARDS;
+        openProjectModal(prevIdx);
+      } else if (e.key === 'ArrowRight') {
+        const nextIdx = (modalActiveIndex + 1) % TOTAL_CARDS;
+        openProjectModal(nextIdx);
       }
     });
 
@@ -1653,14 +2780,20 @@
       goToProject(idx, false);
     }
 
+    // Reusable scratch objects to eliminate garbage collection allocations in per-frame ribbon loop
+    const _upVec = new THREE.Vector3(0, 1, 0);
+    const _normVec = new THREE.Vector3();
+    const _binormVec = new THREE.Vector3();
+    const _rotMatrix = new THREE.Matrix4();
+
     // Per-frame Render Loop
     function render(now) {
       // Lerp smooth carousel index
       const lerpSpeed = isUserDragging ? 0.28 : 0.12;
       currentCarouselIndex += (targetCarouselIndex - currentCarouselIndex) * lerpSpeed;
 
-      // Raycasting for hover
-      if (!isUserDragging) {
+      // Throttled raycasting: only test when pointer actually moved
+      if (!isUserDragging && hasMouseMoved) {
         raycaster.setFromCamera(mouseNDC, camera);
         const intersects = raycaster.intersectObjects(cardMeshes);
         if (intersects.length > 0) {
@@ -1670,18 +2803,19 @@
           hoveredCardIndex = -1;
           canvasEl.style.cursor = 'grab';
         }
+        hasMouseMoved = false;
       }
 
       // Thread each card along the 3D Catmull-Rom Ribbon
       const spacingAlongCurve = 0.088;
       const centerU = 0.5;
 
-      cardMeshes.forEach((mesh, i) => {
+      cardGroups.forEach((group, i) => {
         const offsetFromCenter = i - currentCarouselIndex;
         const u = centerU + offsetFromCenter * spacingAlongCurve;
 
         if (u < -0.05 || u > 1.05) {
-          mesh.visible = false;
+          group.visible = false;
           return;
         }
 
@@ -1689,31 +2823,44 @@
         const pt = curve.getPointAt(clampedU);
         const tangent = curve.getTangentAt(clampedU).normalize();
 
-        // Banking Orientation Frame
-        const upVec = new THREE.Vector3(0, 1, 0);
-        const normVec = new THREE.Vector3().crossVectors(tangent, upVec).normalize();
-        const binormVec = new THREE.Vector3().crossVectors(normVec, tangent).normalize();
+        // Banking Orientation Frame (scratch vectors eliminate 40 heap allocations per frame)
+        _normVec.crossVectors(tangent, _upVec).normalize();
+        _binormVec.crossVectors(_normVec, tangent).normalize();
 
         // Bank with the curve
         const bankAngle = (clampedU - 0.5) * 0.42;
-        normVec.applyAxisAngle(tangent, bankAngle);
-        binormVec.applyAxisAngle(tangent, bankAngle);
+        _normVec.applyAxisAngle(tangent, bankAngle);
+        _binormVec.applyAxisAngle(tangent, bankAngle);
 
-        const rotMatrix = new THREE.Matrix4().makeBasis(normVec, binormVec, tangent);
-        mesh.quaternion.setFromRotationMatrix(rotMatrix);
-        mesh.position.copy(pt);
+        _rotMatrix.makeBasis(_normVec, _binormVec, tangent);
+        group.quaternion.setFromRotationMatrix(_rotMatrix);
+        group.position.copy(pt);
 
         // Scale: card in center fills frame at full size; off-center cards shrink naturally
         const distFromCenter = Math.abs(clampedU - 0.5);
         const isHovered = (i === hoveredCardIndex);
         const baseScale = Math.max(0.68, 1.0 - distFromCenter * 0.55);
-        const scale = isHovered ? baseScale * 1.06 : baseScale;
-        mesh.scale.set(scale, scale, scale);
+        const scale = isHovered ? baseScale * 1.05 : baseScale;
+        group.scale.set(scale, scale, scale);
 
-        // Edge fade-out
+        // Edge fade-out (Center card remains 100% solid with zero opacity loss or color degradation)
         const edgeAlpha = Math.max(0, Math.min(1, (0.48 - distFromCenter) * 8.0));
-        mesh.material.opacity = edgeAlpha;
-        mesh.visible = edgeAlpha > 0.01;
+        group.visible = edgeAlpha > 0.01;
+
+        const isCenterFocused = distFromCenter < 0.08;
+        if (group.userData.shadowMesh && group.userData.shadowMesh.material) {
+          group.userData.shadowMesh.material.transparent = true;
+          group.userData.shadowMesh.material.opacity = edgeAlpha * 0.45;
+        }
+        if (group.userData.chassisMesh && group.userData.chassisMesh.material) {
+          group.userData.chassisMesh.material.transparent = edgeAlpha < 0.999;
+          group.userData.chassisMesh.material.opacity = edgeAlpha;
+        }
+        if (group.userData.screenMesh && group.userData.screenMesh.material) {
+          // Keep screen 100% opaque and untouched when in focal center
+          group.userData.screenMesh.material.transparent = !isCenterFocused && edgeAlpha < 0.999;
+          group.userData.screenMesh.material.opacity = isCenterFocused ? 1.0 : edgeAlpha;
+        }
       });
 
       // Kinetic Headline Parallax (Counter-directional drifting)
@@ -1741,10 +2888,247 @@
     };
   }
 
+  /* ------------------------------------------------------------------ */
+  /* 3-CARD EDITORIAL PORTRAIT STAGE & CREDENTIALS DETAIL MODAL         */
+  /* ------------------------------------------------------------------ */
+  function initCredentialsModalAndCards() {
+    const cards = document.querySelectorAll('.portrait-card');
+    const modal = document.getElementById('credentialsDetailModal');
+    if (!cards.length && !modal) {
+      return null;
+    }
+    const modalBackdrop = document.getElementById('credentialsModalBackdrop');
+    const modalCloseBtn = document.getElementById('credModalCloseBtn');
+    const closeViewBtn = document.getElementById('credCloseViewBtn');
+    const prevBtn = document.getElementById('credPrevCardBtn');
+    const nextBtn = document.getElementById('credNextCardBtn');
+    const tabPills = document.querySelectorAll('.cred-tab-pill');
+
+    const badgeEl = document.getElementById('credCategoryBadge');
+    const titleEl = document.getElementById('credModalTitle');
+    const subEl = document.getElementById('credModalSub');
+
+    const stat1Val = document.getElementById('credStat1Val');
+    const stat1Lbl = document.getElementById('credStat1Lbl');
+    const stat2Val = document.getElementById('credStat2Val');
+    const stat2Lbl = document.getElementById('credStat2Lbl');
+    const stat3Val = document.getElementById('credStat3Val');
+    const stat3Lbl = document.getElementById('credStat3Lbl');
+
+    const panels = {
+      education: document.getElementById('credPanelEducation'),
+      experience: document.getElementById('credPanelExperience'),
+      certifications: document.getElementById('credPanelCertifications')
+    };
+
+    const CRED_CATEGORIES = ['education', 'experience', 'certifications'];
+    let currentCategory = 'education';
+    let isModalOpen = false;
+
+    const CRED_METADATA = {
+      education: {
+        badge: 'EDUCATION & QUALIFICATIONS',
+        title: 'Academic Foundation & Credentials',
+        sub: 'Comprehensive overview of degrees, institutions, and core quantitative coursework.',
+        stats: [
+          { val: 'BSS Degree', lbl: 'Major in Economics' },
+          { val: '3.12 CGPA', lbl: 'Tejgaon National Univ.' },
+          { val: '2 Milestones', lbl: 'Academic Excellence' }
+        ]
+      },
+      experience: {
+        badge: 'CAREER & LEADERSHIP',
+        title: 'Professional Experience & Roles',
+        sub: 'Track record of delivering enterprise Shopify 2.0 architectures and robust frontend applications.',
+        stats: [
+          { val: '5+ Years', lbl: 'Professional Craft' },
+          { val: '40+ Projects', lbl: 'Global Deliveries' },
+          { val: 'Shopify 2.0', lbl: 'Full-Stack Architect' }
+        ]
+      },
+      certifications: {
+        badge: 'ACCREDITATIONS & MASTERY',
+        title: 'Industry Certifications & Skills',
+        sub: 'Verified credentials in modern web engineering, Shopify ecosystem, and accessibility standards.',
+        stats: [
+          { val: '6+ Badges', lbl: 'Verified Credentials' },
+          { val: 'Shopify Expert', lbl: 'Liquid & App Mastery' },
+          { val: 'Modern Web', lbl: 'JavaScript & CSS Systems' }
+        ]
+      }
+    };
+
+    function switchCredTab(category) {
+      if (!CRED_METADATA[category]) return;
+      currentCategory = category;
+      const data = CRED_METADATA[category];
+
+      // Update Header
+      if (badgeEl) badgeEl.textContent = data.badge;
+      if (titleEl) titleEl.textContent = data.title;
+      if (subEl) subEl.textContent = data.sub;
+
+      // Update Quick Stats
+      if (stat1Val) stat1Val.textContent = data.stats[0].val;
+      if (stat1Lbl) stat1Lbl.textContent = data.stats[0].lbl;
+      if (stat2Val) stat2Val.textContent = data.stats[1].val;
+      if (stat2Lbl) stat2Lbl.textContent = data.stats[1].lbl;
+      if (stat3Val) stat3Val.textContent = data.stats[2].val;
+      if (stat3Lbl) stat3Lbl.textContent = data.stats[2].lbl;
+
+      // Update Tab Buttons
+      tabPills.forEach(btn => {
+        const isActive = btn.getAttribute('data-cred-tab') === category;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+
+      // Update Panels
+      Object.keys(panels).forEach(key => {
+        const panel = panels[key];
+        if (panel) {
+          panel.classList.toggle('active', key === category);
+        }
+      });
+
+      // Reset scroll in dialog body
+      const scrollBody = modal ? modal.querySelector('.credentials-body-scroll') : null;
+      if (scrollBody) scrollBody.scrollTop = 0;
+    }
+
+    function openCredModal(category) {
+      if (!modal) return;
+      currentCategory = category || 'education';
+      switchCredTab(currentCategory);
+
+      // Stop Lenis smooth scroll
+      if (typeof lenis !== 'undefined' && lenis && typeof lenis.stop === 'function') {
+        lenis.stop();
+      }
+
+      modal.classList.add('active');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('menu-open');
+      isModalOpen = true;
+    }
+
+    function closeCredModal() {
+      if (!modal) return;
+      modal.classList.remove('active');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('menu-open');
+      isModalOpen = false;
+
+      // Resume Lenis smooth scroll
+      if (typeof lenis !== 'undefined' && lenis && typeof lenis.start === 'function') {
+        lenis.start();
+      }
+    }
+
+    function stepCategory(direction) {
+      const currentIndex = CRED_CATEGORIES.indexOf(currentCategory);
+      let nextIndex = (currentIndex + direction) % CRED_CATEGORIES.length;
+      if (nextIndex < 0) nextIndex = CRED_CATEGORIES.length - 1;
+      switchCredTab(CRED_CATEGORIES[nextIndex]);
+    }
+
+    // Bind cards hover to totally open the floating hovercard
+    cards.forEach(card => {
+      const cardType = card.getAttribute('data-card');
+
+      // Hover totally opens the floating cyber-luxury hovercard
+      card.addEventListener('mouseenter', () => {
+        cards.forEach(c => {
+          if (c !== card) c.classList.remove('is-expanded');
+        });
+        card.classList.add('is-expanded');
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.classList.remove('is-expanded');
+      });
+
+      // Keyboard accessibility support
+      card.addEventListener('focus', () => {
+        cards.forEach(c => {
+          if (c !== card) c.classList.remove('is-expanded');
+        });
+        card.classList.add('is-expanded');
+      });
+      card.addEventListener('blur', () => {
+        card.classList.remove('is-expanded');
+      });
+
+      // Explicit click opens the full detail modal dialog
+      card.addEventListener('click', (e) => {
+        // If clicking a button inside, let button handler manage
+        if (e.target.closest('[data-open-card]') || e.target.closest('.hovercard-footer-btn')) {
+          return;
+        }
+        openCredModal(cardType);
+      });
+
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openCredModal(cardType);
+        }
+      });
+    });
+
+    // Explicit data-open-card buttons & hovercard footer buttons
+    document.querySelectorAll('[data-open-card], .hovercard-footer-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const type = btn.getAttribute('data-open-card') || btn.closest('.portrait-card')?.getAttribute('data-card') || 'education';
+        openCredModal(type);
+      });
+    });
+
+    // Tab pills hover & click inside modal
+    tabPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        const cat = pill.getAttribute('data-cred-tab');
+        switchCredTab(cat);
+      });
+
+      pill.addEventListener('mouseenter', () => {
+        const cat = pill.getAttribute('data-cred-tab');
+        switchCredTab(cat);
+      });
+    });
+
+    // Modal controls
+    if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeCredModal);
+    if (closeViewBtn) closeViewBtn.addEventListener('click', closeCredModal);
+    if (modalBackdrop) modalBackdrop.addEventListener('click', closeCredModal);
+
+    if (prevBtn) prevBtn.addEventListener('click', () => stepCategory(-1));
+    if (nextBtn) nextBtn.addEventListener('click', () => stepCategory(1));
+
+    // Global keyboard listener
+    window.addEventListener('keydown', (e) => {
+      if (!isModalOpen) return;
+      if (e.key === 'Escape') {
+        closeCredModal();
+      } else if (e.key === 'ArrowLeft') {
+        stepCategory(-1);
+      } else if (e.key === 'ArrowRight') {
+        stepCategory(1);
+      }
+    });
+
+    return {
+      open: openCredModal,
+      close: closeCredModal,
+      switchTab: switchCredTab
+    };
+  }
+
   // Listeners
-  window.addEventListener('scroll', updateScroll, { passive: true });
-  document.addEventListener('scroll', updateScroll, { passive: true });
+  window.addEventListener('scroll', () => updateScroll(), { passive: true });
   window.addEventListener('resize', () => {
+    updateCachedMetrics();
     updateScroll();
     if (bloodEngine && bloodEngine.refreshLetterCoordinates) {
       bloodEngine.refreshLetterCoordinates();
@@ -1752,13 +3136,16 @@
   }, { passive: true });
 
   // Initialize
+  updateCachedMetrics();
+  initSectionObservers();
   updateScroll();
   initMouseFollowingEyes();
   initFloatingMenu();
   bloodEngine = initBloodLiquidEngine();
   initAboutDeskInteractions();
-  initTargetCursor();
   projectsEngine = initThreeJSRibbonShowcase();
+  const credentialsEngine = initCredentialsModalAndCards();
+  initFooterInteractiveStringArt();
 
   if ('scrollRestoration' in history) {
     history.scrollRestoration = 'manual';
@@ -1826,6 +3213,52 @@
         projectsEngine.setIndex(idx);
       }
     }
+  } else if (urlParams.get('preview') === 'journey' || urlParams.get('section') === 'journey' || urlParams.get('preview') === 'experience' || urlParams.get('preview') === 'credentials' || urlParams.get('preview') === 'education') {
+    if (elPreloader) {
+      elPreloader.remove();
+      preloaderFinished = true;
+    }
+    if (elHeroSection) elHeroSection.style.display = 'none';
+    if (elBloodSection) elBloodSection.style.display = 'none';
+    if (elSiteHeader) {
+      elSiteHeader.classList.add('logo-hidden');
+    }
+    const journeySec = document.getElementById('journey');
+    if (journeySec) {
+      journeySec.scrollIntoView({ behavior: 'instant', block: 'start' });
+      if (credentialsEngine && (urlParams.get('preview') === 'credentials' || urlParams.has('modal'))) {
+        const tab = urlParams.get('tab') || 'education';
+        credentialsEngine.open(tab);
+      }
+    }
+  } else if (urlParams.get('preview') === 'footer' || urlParams.get('section') === 'footer' || urlParams.get('preview') === 'contact') {
+    if (elPreloader) {
+      elPreloader.remove();
+      preloaderFinished = true;
+    }
+    if (elHeroSection) elHeroSection.style.display = 'none';
+    if (elBloodSection) elBloodSection.style.display = 'none';
+    if (elSiteHeader) {
+      elSiteHeader.classList.add('logo-hidden');
+    }
+    const footerSec = document.getElementById('contact');
+    if (footerSec) {
+      footerSec.scrollIntoView({ behavior: 'instant', block: 'start' });
+    }
+  } else if (urlParams.get('preview') === 'marquee' || urlParams.get('section') === 'marquee' || urlParams.get('preview') === 'partners' || urlParams.get('preview') === 'ribbon') {
+    if (elPreloader) {
+      elPreloader.remove();
+      preloaderFinished = true;
+    }
+    if (elHeroSection) elHeroSection.style.display = 'none';
+    if (elBloodSection) elBloodSection.style.display = 'none';
+    if (elSiteHeader) {
+      elSiteHeader.classList.add('logo-hidden');
+    }
+    const marqSec = document.getElementById('brandMarquee');
+    if (marqSec) {
+      marqSec.scrollIntoView({ behavior: 'instant', block: 'start' });
+    }
   } else if (urlParams.has('scrollPx')) {
     if (elPreloader) {
       elPreloader.remove();
@@ -1842,6 +3275,8 @@
     }
   }
 
-  requestAnimationFrame(tickPreloader);
+  if (elPreloader) {
+    requestAnimationFrame(tickPreloader);
+  }
   requestAnimationFrame(tick);
 })();

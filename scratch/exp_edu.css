@@ -1,0 +1,565 @@
+/* ================================================================= */
+/* EXPERIENCE & EDUCATION SECTION (Mockup-Matched Luxury Layout)     */
+/* ================================================================= */
+.experience-education-section {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #07090e;
+  background-image: 
+    radial-gradient(ellipse 900px 350px at 50% 0%, rgba(212, 175, 55, 0.07) 0%, transparent 70%),
+    linear-gradient(180deg, #06070a 0%, #080b12 50%, #06070a 100%);
+  color: #ffffff;
+  padding: clamp(70px, 9vh, 120px) 0 clamp(60px, 8vh, 100px);
+  z-index: 10;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.exp-edu-anchor {
+  position: absolute;
+  top: -60px;
+  left: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+/* Ambient Backdrops */
+.exp-edu-ambient-glow {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+  filter: blur(100px);
+}
+
+.exp-edu-ambient-glow.glow-top {
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, transparent 70%);
+}
+
+.exp-edu-ambient-glow.glow-gold {
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(229, 169, 60, 0.05) 0%, transparent 70%);
+}
+
+/* Container */
+.exp-edu-container {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 4vw, 56px);
+  box-sizing: border-box;
+}
+
+/* Central Glowing Flare / Divider Line (Desktop) */
+.exp-edu-central-divider {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 10px;
+  bottom: 60px;
+  width: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  z-index: 4;
+}
+
+.central-divider-line {
+  width: 1px;
+  flex: 1;
+  background: linear-gradient(180deg, transparent 0%, rgba(212, 175, 55, 0.22) 20%, rgba(212, 175, 55, 0.22) 80%, transparent 100%);
+}
+
+.central-divider-flare {
+  position: relative;
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flare-core {
+  color: #f6c85f;
+  font-size: 1.15rem;
+  line-height: 1;
+  filter: drop-shadow(0 0 6px #f6c85f) drop-shadow(0 0 16px rgba(246, 200, 95, 0.85));
+  animation: flarePulse 3.5s ease-in-out infinite;
+}
+
+@keyframes flarePulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.22);
+    opacity: 1;
+    filter: drop-shadow(0 0 10px #f6c85f) drop-shadow(0 0 24px rgba(246, 200, 95, 1));
+  }
+}
+
+.flare-glow {
+  position: absolute;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(246, 200, 95, 0.38) 0%, transparent 70%);
+}
+
+/* Two-Column Grid */
+.exp-edu-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(40px, 5.5vw, 84px);
+  position: relative;
+}
+
+.exp-column,
+.edu-column {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Headers */
+.exp-edu-header {
+  margin-bottom: 26px;
+}
+
+.exp-edu-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.eyebrow-dash {
+  width: 28px;
+  height: 2px;
+  background: #d4af37;
+  border-radius: 2px;
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.6);
+}
+
+.eyebrow-text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  color: #d4af37;
+  text-transform: uppercase;
+}
+
+.exp-edu-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: clamp(2.4rem, 3.8vw, 3.5rem);
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+  margin: 0;
+}
+
+.exp-edu-description {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(0.85rem, 0.98vw, 0.94rem);
+  color: rgba(255, 255, 255, 0.68);
+  line-height: 1.62;
+  margin: 14px 0 0;
+  max-width: 540px;
+}
+
+/* 4 Stat Metric Cards (Row Grid) */
+.exp-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.exp-stat-card {
+  background: rgba(14, 18, 26, 0.68);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 15px 12px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.exp-stat-card:hover {
+  border-color: rgba(212, 175, 55, 0.45);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5), 0 0 20px rgba(212, 175, 55, 0.15);
+}
+
+.stat-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 24px;
+}
+
+.stat-value {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 10px 0 4px;
+  line-height: 1.1;
+}
+
+.stat-label {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.68rem;
+  color: #8896ab;
+  line-height: 1.3;
+  font-weight: 500;
+}
+
+/* Vertical Timeline */
+.exp-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+}
+
+/* Timeline Vertical Track Connecting Line */
+.exp-timeline::before {
+  content: '';
+  position: absolute;
+  top: 26px;
+  bottom: 40px;
+  left: 6px;
+  width: 1.5px;
+  background: linear-gradient(180deg, rgba(212, 175, 55, 0.4) 0%, rgba(212, 175, 55, 0.25) 50%, rgba(212, 175, 55, 0.35) 100%);
+  z-index: 1;
+}
+
+.timeline-entry {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  position: relative;
+}
+
+.timeline-indicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  padding-top: 14px;
+  min-width: 116px;
+  z-index: 2;
+}
+
+.timeline-dot {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 2px solid #d4af37;
+  background: #07090e;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.45);
+  flex-shrink: 0;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.timeline-date {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #8696ab;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+}
+
+/* Interactive Timeline Hover States */
+.timeline-entry:hover .timeline-dot {
+  background: #d4af37;
+  box-shadow: 0 0 16px rgba(212, 175, 55, 0.95);
+  transform: scale(1.15);
+}
+
+.timeline-entry:hover .timeline-date {
+  color: #ffffff;
+}
+
+.timeline-entry:hover .timeline-card {
+  border-color: rgba(255, 255, 255, 0.18);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
+}
+
+/* Timeline Cards */
+.timeline-card {
+  flex: 1;
+  min-width: 0;
+  background: rgba(12, 16, 24, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 18px 20px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.timeline-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.company-logo-badge {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.company-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.company-name {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.company-name.edu-degree {
+  font-size: 0.96rem;
+  line-height: 1.3;
+}
+
+.company-role {
+  font-size: 0.82rem;
+  color: #8e9cb0;
+  margin-top: 2px;
+  font-weight: 500;
+}
+
+.company-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  color: #6f7d91;
+  margin-top: 4px;
+}
+
+.meta-location {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.meta-divider {
+  opacity: 0.4;
+}
+
+/* Rounded Pill Badges */
+.timeline-badge-pill {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.pill-gold {
+  border: 1px solid rgba(212, 175, 55, 0.55);
+  color: #e5a93c;
+  background: rgba(212, 175, 55, 0.08);
+}
+
+.pill-blue {
+  border: 1px solid rgba(59, 130, 246, 0.5);
+  color: #60a5fa;
+  background: rgba(59, 130, 246, 0.08);
+}
+
+.pill-purple {
+  border: 1px solid rgba(168, 85, 247, 0.5);
+  color: #c084fc;
+  background: rgba(168, 85, 247, 0.08);
+}
+
+.pill-green {
+  border: 1px solid rgba(74, 222, 128, 0.5);
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.08);
+}
+
+/* Card Descriptions */
+.timeline-card-desc {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.55;
+  margin: 0 0 12px;
+}
+
+.edu-timeline .timeline-card-desc {
+  margin: 0;
+}
+
+/* Tech Tags */
+.timeline-tech-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tech-tag {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #9bb0c6;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 3px 10px;
+  border-radius: 20px;
+  transition: all 0.2s ease;
+}
+
+.tech-tag:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+/* Bottom Bar: Handwritten Signature (Bottom Left) */
+.exp-edu-footer {
+  margin-top: clamp(40px, 6vh, 64px);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 4px;
+}
+
+.signature-wrap {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  user-select: none;
+}
+
+.signature-text {
+  font-family: 'Caveat', cursive;
+  font-size: clamp(2rem, 2.8vw, 2.6rem);
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-shadow: 0 0 16px rgba(255, 255, 255, 0.35);
+}
+
+.signature-underline {
+  width: 140px;
+  height: 16px;
+  margin-top: -4px;
+  opacity: 0.65;
+}
+
+/* ================================================================= */
+/* RESPONSIVE DESIGN FOR EXPERIENCE & EDUCATION SECTION              */
+/* ================================================================= */
+@media (max-width: 1140px) {
+  .exp-edu-grid {
+    grid-template-columns: 1fr;
+    gap: 54px;
+  }
+
+  .exp-edu-central-divider {
+    display: none;
+  }
+
+  .exp-column {
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+}
+
+@media (max-width: 768px) {
+  .exp-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .timeline-entry {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .exp-timeline::before {
+    display: none;
+  }
+
+  .timeline-indicator {
+    padding-top: 0;
+    min-width: auto;
+  }
+
+  .timeline-card {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 480px) {
+  .experience-education-section {
+    padding: 50px 0 50px;
+  }
+
+  .exp-edu-title {
+    font-size: 2.1rem;
+  }
+
+  .timeline-card {
+    padding: 16px 14px;
+  }
+
+  .timeline-card-header {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .timeline-badge-pill {
+    order: -1;
+    margin-left: auto;
+  }
+
+  .signature-text {
+    font-size: 1.85rem;
+  }
+}
