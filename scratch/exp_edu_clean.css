@@ -1,0 +1,414 @@
+/* ================================================================= */
+/* EXPERIENCE & EDUCATION SECTION (Clean 100vh Minimalist Layout)    */
+/* ================================================================= */
+.experience-education-section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 640px;
+  max-height: 100vh;
+  background-color: #07090e;
+  background-image: linear-gradient(180deg, #06070a 0%, #080b12 50%, #06070a 100%);
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(14px, 2vh, 26px) 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.exp-edu-anchor {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+/* Container */
+.exp-edu-container {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 3.5vw, 48px);
+  box-sizing: border-box;
+}
+
+/* Central Clean Subtle Divider Line (Desktop) */
+.exp-edu-central-divider {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 10px;
+  bottom: 10px;
+  width: 1px;
+  background: linear-gradient(180deg, transparent 0%, rgba(255, 255, 255, 0.08) 15%, rgba(255, 255, 255, 0.08) 85%, transparent 100%);
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* Two-Column Grid */
+.exp-edu-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(32px, 4.5vw, 64px);
+  position: relative;
+}
+
+.exp-column,
+.edu-column {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Headers */
+.exp-edu-header {
+  margin-bottom: clamp(10px, 1.5vh, 16px);
+}
+
+.exp-edu-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.eyebrow-dash {
+  width: 24px;
+  height: 2px;
+  background: #d4af37;
+  border-radius: 2px;
+}
+
+.eyebrow-text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  color: #d4af37;
+  text-transform: uppercase;
+}
+
+.exp-edu-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: clamp(1.8rem, 2.4vw, 2.35rem);
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.exp-edu-description {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(0.74rem, 0.85vw, 0.82rem);
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.45;
+  margin: 6px 0 0;
+  max-width: 520px;
+}
+
+/* Vertical Timeline */
+.exp-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 1.1vh, 12px);
+  position: relative;
+}
+
+/* Timeline Vertical Track Connecting Line */
+.exp-timeline::before {
+  content: '';
+  position: absolute;
+  top: 18px;
+  bottom: 24px;
+  left: 5px;
+  width: 1.5px;
+  background: rgba(255, 255, 255, 0.1);
+  z-index: 1;
+}
+
+.timeline-entry {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  position: relative;
+}
+
+.timeline-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  padding-top: 10px;
+  min-width: 110px;
+  z-index: 2;
+}
+
+.timeline-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 2px solid #d4af37;
+  background: #07090e;
+  flex-shrink: 0;
+  transition: all 0.25s ease;
+}
+
+.timeline-date {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #8292a4;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  transition: color 0.25s ease;
+}
+
+/* Minimalist Clean Timeline Hover States */
+.timeline-entry:hover .timeline-dot {
+  background: #d4af37;
+  border-color: #d4af37;
+}
+
+.timeline-entry:hover .timeline-date {
+  color: #ffffff;
+}
+
+.timeline-entry:hover .timeline-card {
+  border-color: rgba(255, 255, 255, 0.16);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+/* Timeline Cards */
+.timeline-card {
+  flex: 1;
+  min-width: 0;
+  background: rgba(13, 17, 24, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: clamp(9px, 1.1vh, 13px) clamp(14px, 1.3vw, 18px);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.timeline-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.company-logo-badge {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.company-logo-badge svg {
+  width: 34px;
+  height: 34px;
+}
+
+.company-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.company-name {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.company-name.edu-degree {
+  font-size: 0.86rem;
+  line-height: 1.25;
+}
+
+.company-role {
+  font-size: 0.74rem;
+  color: #8fa0b5;
+  margin-top: 1px;
+  font-weight: 500;
+}
+
+.company-meta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.66rem;
+  color: #6f7d91;
+  margin-top: 2px;
+}
+
+.meta-location {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.meta-divider {
+  opacity: 0.4;
+}
+
+/* Rounded Pill Badges */
+.timeline-badge-pill {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.64rem;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.pill-gold {
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  color: #e5a93c;
+  background: rgba(212, 175, 55, 0.06);
+}
+
+.pill-blue {
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  color: #60a5fa;
+  background: rgba(59, 130, 246, 0.06);
+}
+
+.pill-purple {
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  color: #c084fc;
+  background: rgba(168, 85, 247, 0.06);
+}
+
+.pill-green {
+  border: 1px solid rgba(74, 222, 128, 0.4);
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.06);
+}
+
+/* Card Descriptions */
+.timeline-card-desc {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.74rem;
+  color: rgba(255, 255, 255, 0.62);
+  line-height: 1.38;
+  margin: 0 0 6px;
+}
+
+.edu-timeline .timeline-card-desc {
+  margin: 0;
+}
+
+/* Tech Tags */
+.timeline-tech-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.tech-tag {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: #93a5ba;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 2px 8px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.tech-tag:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+/* ================================================================= */
+/* RESPONSIVE DESIGN FOR EXPERIENCE & EDUCATION SECTION              */
+/* ================================================================= */
+@media (max-width: 1080px) {
+  .experience-education-section {
+    height: auto;
+    min-height: 100vh;
+    max-height: none;
+    overflow: visible;
+    padding: 60px 0;
+  }
+
+  .exp-edu-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .exp-edu-central-divider {
+    display: none;
+  }
+
+  .exp-column {
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+}
+
+@media (max-width: 768px) {
+  .timeline-entry {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .exp-timeline::before {
+    display: none;
+  }
+
+  .timeline-indicator {
+    padding-top: 0;
+    min-width: auto;
+  }
+
+  .timeline-card {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 480px) {
+  .experience-education-section {
+    padding: 44px 0 44px;
+  }
+
+  .exp-edu-title {
+    font-size: 1.85rem;
+  }
+
+  .timeline-card {
+    padding: 13px 12px;
+  }
+
+  .timeline-card-header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .timeline-badge-pill {
+    order: -1;
+    margin-left: auto;
+  }
+}
